@@ -27,7 +27,7 @@ Assistant IA pour les chargés d'affaires d'une banque publique **fictive** fina
 - Ne committer/pousser que sur demande de Baptiste.
 
 ## Stack cible
-Python 3.12 + **uv** · FastAPI + Pydantic · LangGraph · Azure OpenAI (chat léger + text-embedding-3-small) · Azure AI Search (hybride) · Blob Storage · PostgreSQL (audit, pgvector possible en local) · Azure Container Apps · Key Vault + Managed Identity + Entra ID · Terraform · GitHub Actions (OIDC) · Application Insights + OpenTelemetry · Ragas/promptfoo · Next.js + TypeScript.
+Python 3.15 (dernière version, géré par **uv**) · FastAPI + Pydantic · LangGraph · Azure OpenAI (chat léger + text-embedding-3-small) · Azure AI Search (hybride) · Blob Storage · PostgreSQL (audit, pgvector possible en local) · Azure Container Apps · Key Vault + Managed Identity + Entra ID · Terraform · GitHub Actions (OIDC) · Application Insights + OpenTelemetry · Ragas/promptfoo · Next.js + TypeScript.
 Développement local : **Ollama** derrière l'interface `LLMProvider` (bascule Azure OpenAI par variable d'environnement).
 
 ## Structure du dépôt
@@ -60,11 +60,12 @@ data/corpus/     PDF publics (non versionnés)
 ## Commandes (à compléter au fil des phases)
 ```bash
 # API (Phase 1)
-cd apps/api && uv sync && uv run pytest && uv run ruff check .
-uv run uvicorn main:app --reload
+cd apps/api && uv sync && uv run pytest && uv run ruff check . && uv run ruff format --check .
+uv run uvicorn main:app --reload   # http://localhost:8000/health
 ```
 
 ## État d'avancement
 - [x] Préparation du terrain (dépôt, structure, CLAUDE.md)
-- [~] Phase 0 — Cadrage (`docs/cadrage.md`) : brouillon rédigé, à valider
-- [ ] Phases 1 à 6 : voir le plan
+- [x] Phase 0 — Cadrage (`docs/cadrage.md`), validé
+- [~] Phase 1 — RAG local : outillage installé (uv, Python 3.15, Ollama), squelette API + /health
+- [ ] Phases 2 à 6 : voir le plan

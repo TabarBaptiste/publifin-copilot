@@ -87,7 +87,7 @@ Avant de coder, fais ce qu'un architecte ferait. Livrable : `docs/cadrage.md`.
 
 Objectif : un RAG qui marche sur ta machine, sans Azure.
 
-- [ ] Installer Python 3.12 et uv, créer le projet, configurer ruff (lint) et pytest.
+- [x] Installer Python (dernière version, 3.15) et uv, créer le projet, configurer ruff (lint) et pytest.
 - [ ] Script d'**ingestion** : lire les PDF, découper en morceaux (chunks de \~500-800 tokens avec chevauchement), garder les métadonnées (fichier, page, titre).
 - [ ] Calculer les embeddings et les stocker dans une base vectorielle locale (Chroma, ou pgvector sur ton PostgreSQL).
 - [ ] Endpoint FastAPI `POST /ask` : recherche des morceaux pertinents → prompt → réponse **avec citations** (fichier + page).
