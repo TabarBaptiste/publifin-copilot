@@ -88,12 +88,12 @@ Avant de coder, fais ce qu'un architecte ferait. Livrable : `docs/cadrage.md`.
 Objectif : un RAG qui marche sur ta machine, sans Azure.
 
 - [x] Installer Python (3.14 : voir ADR 0002) et uv, créer le projet, configurer ruff (lint) et pytest.
-- [ ] Script d'**ingestion** : lire les PDF, découper en morceaux (chunks de \~500-800 tokens avec chevauchement), garder les métadonnées (fichier, page, titre).
-- [ ] Calculer les embeddings et les stocker dans une base vectorielle locale (Chroma, ou pgvector sur ton PostgreSQL).
-- [ ] Endpoint FastAPI `POST /ask` : recherche des morceaux pertinents → prompt → réponse **avec citations** (fichier + page).
-- [ ] Garde-fou : si aucun passage pertinent, l'assistant répond « je ne trouve pas l'information dans les documents » au lieu d'inventer.
-- [ ] Une interface d'abstraction `LLMProvider` pour passer d'Ollama à Azure OpenAI par une variable d'environnement.
-- [ ] Tests unitaires sur le découpage et le format des réponses.
+- [x] Script d'**ingestion** : lire les PDF, découper en morceaux (chunks de \~500-800 tokens avec chevauchement), garder les métadonnées (fichier, page, titre).
+- [x] Calculer les embeddings et les stocker dans une base vectorielle locale (Chroma, ou pgvector sur ton PostgreSQL).
+- [x] Endpoint FastAPI `POST /ask` : recherche des morceaux pertinents → prompt → réponse **avec citations** (fichier + page).
+- [x] Garde-fou : si aucun passage pertinent, l'assistant répond « je ne trouve pas l'information dans les documents » au lieu d'inventer.
+- [~] Une interface d'abstraction `LLMProvider` pour passer d'Ollama à Azure OpenAI par une variable d'environnement. *(Ollama fait ; Azure OpenAI en Phase 2)*
+- [x] Tests unitaires sur le découpage et le format des réponses.
 
 **Ce que tu apprends :** Python moderne, chaîne RAG complète, prompt avec citations.
 

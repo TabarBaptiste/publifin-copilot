@@ -67,10 +67,11 @@ cd apps/api && uv sync && uv run pytest && uv run ruff check . && uv run ruff fo
 uv run uvicorn main:app --reload   # http://localhost:8000/health
 uv run python scripts/download_corpus.py   # télécharge les PDF (docs/corpus.md)
 uv run python -m rag.ingest                # chunking + embeddings (Ollama) -> data/chroma
+uv run python scripts/eval_retrieval.py    # qualité de la recherche sur eval/questions.jsonl (sans LLM)
 ```
 
 ## État d'avancement
 - [x] Préparation du terrain (dépôt, structure, CLAUDE.md)
 - [x] Phase 0 — Cadrage (`docs/cadrage.md`), validé
-- [~] Phase 1 — RAG local : outillage, corpus (4 PDF), chunking testé, script d'ingestion ; reste : endpoint /ask, LLMProvider, garde-fou
+- [~] Phase 1 — RAG local : fait (corpus, ingestion, /ask avec citations et refus, tests, jeu de 17 questions `eval/`) ; reste : LLMProvider Azure (Phase 2), latence (< 30 s visés)
 - [ ] Phases 2 à 6 : voir le plan

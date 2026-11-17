@@ -19,7 +19,7 @@ class Settings(BaseSettings):
 
     top_k: int = 5
     # Passages farther than this (cosine distance) are considered unrelated to the question.
-    max_distance: float = 0.45
+    max_distance: float = 0.43
 
 
 settings = Settings()
