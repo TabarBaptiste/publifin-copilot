@@ -27,7 +27,7 @@ Assistant IA pour les chargés d'affaires d'une banque publique **fictive** fina
 - Ne committer/pousser que sur demande de Baptiste.
 
 ## Stack cible
-Python 3.15 (dernière version, géré par **uv**) · FastAPI + Pydantic · LangGraph · Azure OpenAI (chat léger + text-embedding-3-small) · Azure AI Search (hybride) · Blob Storage · PostgreSQL (audit, pgvector possible en local) · Azure Container Apps · Key Vault + Managed Identity + Entra ID · Terraform · GitHub Actions (OIDC) · Application Insights + OpenTelemetry · Ragas/promptfoo · Next.js + TypeScript.
+Python 3.14 (3.15 écarté : `onnxruntime` sans wheel, voir [ADR 0002](docs/adr/0002-vector-store-chroma-local.md) ; géré par **uv**) · FastAPI + Pydantic · LangGraph · Azure OpenAI (chat léger + text-embedding-3-small) · Azure AI Search (hybride) · Blob Storage · PostgreSQL (audit, pgvector possible en local) · Azure Container Apps · Key Vault + Managed Identity + Entra ID · Terraform · GitHub Actions (OIDC) · Application Insights + OpenTelemetry · Ragas/promptfoo · Next.js + TypeScript.
 Développement local : **Ollama** derrière l'interface `LLMProvider` (bascule Azure OpenAI par variable d'environnement).
 
 ## Structure du dépôt
@@ -45,11 +45,14 @@ data/corpus/     PDF publics (non versionnés)
 - **Aucun secret en dur**, jamais de `.env` commité (fournir `.env.example`). Cible Azure : Managed Identity / Key Vault / OIDC.
 - **Dépôt public, vu par n'importe quelle entreprise** : ne jamais mentionner d'offre d'emploi, d'entreprise ciblée ou d'employeur (ex-employeur compris) dans le code, les docs, les commits ou les PR.
 - **Données publiques uniquement.** Aucune donnée réelle de l'ancien employeur de Baptiste, aucune donnée personnelle réelle.
-- **Budget : 0 €, aucune dépense** (voir [ADR 0001](docs/adr/0001-budget-zero-euro.md)). Tout se fait en local (Ollama, Chroma/pgvector) sauf une fenêtre Azure time-boxée sur l'essai gratuit (~30 jours), **sans jamais passer en paiement à l'usage**. Terraform : `fmt`/`validate`/`plan` librement, **`apply` seulement avec accord explicite de Baptiste**. Ne jamais créer/déployer de ressource Azure ni ouvrir un compte payant sans son accord ; vérifier qu'un service est gratuit avant de le proposer ; `terraform destroy` après chaque session cloud.
+- **Budget : 0 €, aucune dépense** (voir [ADR 0001](docs/adr/0001-budget-zero-euro.md)). Tout se fait en local (Ollama, Chroma) sauf une fenêtre Azure time-boxée sur l'essai gratuit (~30 jours), **sans jamais passer en paiement à l'usage**. Terraform : `fmt`/`validate`/`plan` librement, **`apply` seulement avec accord explicite de Baptiste**. Ne jamais créer/déployer de ressource Azure ni ouvrir un compte payant sans son accord ; vérifier qu'un service est gratuit avant de le proposer ; `terraform destroy` après chaque session cloud.
 - Machine de dev : Ryzen 5 5600H, 16 Go RAM, GPU AMD 4 Go (accélération Ollama incertaine) → modèles quantifiés 3B–8B, embeddings multilingues (`bge-m3` envisagé, corpus en français ; voir cadrage §8).
 - L'agent ne peut **jamais écrire sans validation humaine** ; chaque appel d'outil et décision est tracé dans l'audit.
 - Le RAG répond « je ne trouve pas l'information dans les documents » plutôt que d'inventer ; toujours citer les sources.
 - Mesurer avant d'affirmer : décisions de qualité appuyées par l'évaluation (Phase 5).
+
+## Piège Windows (uv)
+Le Python géré par uv ne s'installe pas dans son dossier par défaut (`%APPDATA%/uv/python` est redirigé par l'app Claude et casse les liens). Il est installé dans `.uv-python/` (ignoré par git). Pour réinstaller : `UV_PYTHON_INSTALL_DIR=<racine du dépôt>/.uv-python uv python install 3.14`. Le `.venv` existant suffit ensuite pour `uv run`.
 
 ## Conventions
 - Python : ruff (lint + format), pytest, typage strict encouragé (Pydantic), gestion des dépendances via `uv` uniquement.
@@ -62,10 +65,12 @@ data/corpus/     PDF publics (non versionnés)
 # API (Phase 1)
 cd apps/api && uv sync && uv run pytest && uv run ruff check . && uv run ruff format --check .
 uv run uvicorn main:app --reload   # http://localhost:8000/health
+uv run python scripts/download_corpus.py   # télécharge les PDF (docs/corpus.md)
+uv run python -m rag.ingest                # chunking + embeddings (Ollama) -> data/chroma
 ```
 
 ## État d'avancement
 - [x] Préparation du terrain (dépôt, structure, CLAUDE.md)
 - [x] Phase 0 — Cadrage (`docs/cadrage.md`), validé
-- [~] Phase 1 — RAG local : outillage installé (uv, Python 3.15, Ollama), squelette API + /health
+- [~] Phase 1 — RAG local : outillage, corpus (4 PDF), chunking testé, script d'ingestion ; reste : endpoint /ask, LLMProvider, garde-fou
 - [ ] Phases 2 à 6 : voir le plan

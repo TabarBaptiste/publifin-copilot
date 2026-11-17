@@ -38,3 +38,6 @@ chroma/
 Thumbs.db
 .idea/
 .vscode/
+
+# uv-managed Python (local workaround, see CLAUDE.md)
+.uv-python/
