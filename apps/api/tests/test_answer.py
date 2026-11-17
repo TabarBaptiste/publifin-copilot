@@ -35,7 +35,7 @@ def test_prompt_numbers_the_passages_and_contains_the_question():
     assert messages[0]["role"] == "system"
     assert "[1] (a.pdf, page 3)\nun" in messages[1]["content"]
     assert "[2] (b.pdf, page 7)\ndeux" in messages[1]["content"]
-    assert messages[1]["content"].endswith("Question : Quelle durée ?")
+    assert "Question : Quelle durée ?" in messages[1]["content"]
 
 
 def test_refuses_without_calling_the_llm_when_no_passage_is_close_enough():

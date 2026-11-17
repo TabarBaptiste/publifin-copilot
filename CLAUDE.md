@@ -73,5 +73,5 @@ uv run python scripts/eval_retrieval.py    # qualité de la recherche sur eval/q
 ## État d'avancement
 - [x] Préparation du terrain (dépôt, structure, CLAUDE.md)
 - [x] Phase 0 — Cadrage (`docs/cadrage.md`), validé
-- [~] Phase 1 — RAG local : fait (corpus, ingestion, /ask avec citations et refus, tests, jeu de 17 questions `eval/`) ; reste : LLMProvider Azure (Phase 2), latence (< 30 s visés)
+- [~] Phase 1 — RAG local : fait (corpus 6 PDF, ingestion, /ask avec citations et refus, tests, jeu de 17 questions `eval/`) ; reste : LLMProvider Azure (Phase 2), latence (< 30 s visés)
 - [ ] Phases 2 à 6 : voir le plan

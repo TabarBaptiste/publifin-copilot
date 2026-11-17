@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     corpus_dir: Path = REPO_ROOT / "data" / "corpus"
     vector_store_dir: Path = REPO_ROOT / "data" / "chroma"
 
-    top_k: int = 5
+    top_k: int = 2
     # Passages farther than this (cosine distance) are considered unrelated to the question.
     max_distance: float = 0.43
 
