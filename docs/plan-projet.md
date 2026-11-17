@@ -13,9 +13,9 @@ Le tout tourne sur Azure, déployé par Infrastructure as Code, avec CI/CD, obse
 
 ### Pourquoi ce sujet
 
-Chaque brique correspond à une mission de l'offre Sfil :
+Chaque brique correspond à une mission type d'architecte IA :
 
-| Mission de l'offre | Ce que tu construis |
+| Mission type | Ce que tu construis |
 | --- | --- |
 | Cadrer les cas d'usage | Une fiche de cadrage (besoin, valeur, risques) avant de coder |
 | Concevoir des agents et du RAG | Le RAG documentaire + l'agent de pré-analyse |
@@ -58,15 +58,15 @@ Terraform, GitHub Actions
 
 | Couche | Choix | Pourquoi |
 | --- | --- | --- |
-| Langage backend | Python 3.12, gestionnaire **uv** | Python est demandé dans l'offre |
+| Langage backend | Python 3.12, gestionnaire **uv** | Langage de référence de l'écosystème IA |
 | API | FastAPI + Pydantic | Proche de ce que tu connais avec NestJS |
-| Orchestration agent | **LangGraph** (variante : Semantic Kernel) | Cité dans l'offre, gère bien la pause pour validation humaine |
+| Orchestration agent | **LangGraph** (variante : Semantic Kernel) | Très utilisé pour les agents, gère bien la pause pour validation humaine |
 | Modèles | Azure OpenAI : un modèle de chat léger (type GPT-4o-mini) + text-embedding-3-small | Coût faible |
 | Recherche | Azure AI Search (hybride : mots-clés + vecteurs) | Brique RAG standard sur Azure |
 | Stockage | Blob Storage (PDF), PostgreSQL (audit) | Tu connais déjà PostgreSQL |
 | Hébergement | Azure Container Apps | Simple, scale à zéro, peu cher |
 | Sécurité | Managed Identity, Key Vault, Entra ID | Pas de clé en dur |
-| IaC | **Terraform** (ou Bicep) | Mission explicite de l'offre |
+| IaC | **Terraform** (ou Bicep) | Standard de l'infrastructure as code |
 | CI/CD | GitHub Actions | Visible sur ton GitHub |
 | Observabilité | Application Insights + OpenTelemetry | Qualité, latence, coûts |
 | Évaluation | Ragas ou promptfoo | Mesurer au lieu de dire « ça marche » |
@@ -78,10 +78,10 @@ Terraform, GitHub Actions
 
 Avant de coder, fais ce qu'un architecte ferait. Livrable : `docs/cadrage.md`.
 
-- [ ] Décrire les 2 cas d'usage : utilisateur, besoin, gain attendu (ex. temps de réponse à une collectivité).
-- [ ] Lister les risques : hallucination, fuite de données, coût, dépendance fournisseur.
-- [ ] Définir les critères de succès mesurables (ex. ≥ 80 % de réponses jugées fidèles aux sources, latence < 5 s, coût < X € / 100 questions).
-- [ ] Dessiner un premier schéma d'architecture (draw.io ou Excalidraw).
+- [x] Décrire les 2 cas d'usage : utilisateur, besoin, gain attendu (ex. temps de réponse à une collectivité).
+- [x] Lister les risques : hallucination, fuite de données, coût, dépendance fournisseur.
+- [x] Définir les critères de succès mesurables (ex. ≥ 80 % de réponses jugées fidèles aux sources, latence < 5 s, coût < X € / 100 questions).
+- [x] Dessiner un premier schéma d'architecture (draw.io ou Excalidraw).
 
 ## Phase 1 — Python et RAG en local (2-3 semaines)
 
@@ -114,7 +114,7 @@ Objectif : la même chose, en version cloud, déployée à la main d'abord (pour
 
 ## Phase 3 — Plateforme de prototypage : IaC, CI/CD, observabilité (2 semaines)
 
-Objectif : pouvoir détruire et recréer tout l'environnement en une commande. C'est la mission « plateforme sécurisée de prototypage » de l'offre.
+Objectif : pouvoir détruire et recréer tout l'environnement en une commande. C'est la mission « plateforme sécurisée de prototypage ».
 
 - [ ] Décrire toute l'infra en **Terraform** : resource group, OpenAI, AI Search, Storage, Container Apps, Key Vault, Log Analytics, Application Insights, rôles RBAC.
 - [ ] Découper en **modules réutilisables** (`modules/ai-search`, `modules/container-app`…) et un dossier par environnement (`envs/dev`).
@@ -164,7 +164,7 @@ Objectif : prouver la qualité avec des chiffres, puis trancher comme un archite
 - [ ] Mesurer aussi latence, coût par question, et robustesse (questions reformulées, fautes de frappe).
 - [ ] Comparer au moins deux variantes : taille des chunks, recherche vectorielle seule vs hybride, deux modèles. Tableau de résultats dans `docs/evaluation.md`.
 - [ ] Lancer l'évaluation automatiquement dans la CI : la PR échoue si la qualité baisse sous un seuil.
-- [ ] Rédiger une **recommandation argumentée** (1 page) : on industrialise, on fait évoluer ou on arrête, et à quelles conditions. C'est exactement ce que demande l'offre.
+- [ ] Rédiger une **recommandation argumentée** (1 page) : on industrialise, on fait évoluer ou on arrête, et à quelles conditions. C'est un livrable typique d'un architecte.
 
 ## Phase 6 — Sécurité, RGPD et IA responsable (1 semaine, en continu)
 

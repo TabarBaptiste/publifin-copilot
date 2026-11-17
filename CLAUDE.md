@@ -1,6 +1,6 @@
 # CLAUDE.md — PubliFin Copilot
 
-Projet d'entraînement « Architecte IA sur Azure » (projet personnel de Baptiste, destiné au CV/portfolio et à la préparation d'entretiens type offre Sfil).
+Projet d'entraînement « Architecte IA sur Azure » (projet personnel de Baptiste, destiné au CV/portfolio et à la montée en compétences d'architecte IA).
 Plan complet et source de vérité : [docs/plan-projet.md](docs/plan-projet.md) — le relire avant de démarrer une phase.
 
 ## Le projet en une phrase
@@ -43,9 +43,10 @@ data/corpus/     PDF publics (non versionnés)
 
 ## Règles non négociables
 - **Aucun secret en dur**, jamais de `.env` commité (fournir `.env.example`). Cible Azure : Managed Identity / Key Vault / OIDC.
+- **Dépôt public, vu par n'importe quelle entreprise** : ne jamais mentionner d'offre d'emploi, d'entreprise ciblée ou d'employeur (ex-employeur compris) dans le code, les docs, les commits ou les PR.
 - **Données publiques uniquement.** Aucune donnée réelle de l'ancien employeur de Baptiste, aucune donnée personnelle réelle.
 - **Budget : 0 €, aucune dépense** (voir [ADR 0001](docs/adr/0001-budget-zero-euro.md)). Tout se fait en local (Ollama, Chroma/pgvector) sauf une fenêtre Azure time-boxée sur l'essai gratuit (~30 jours), **sans jamais passer en paiement à l'usage**. Terraform : `fmt`/`validate`/`plan` librement, **`apply` seulement avec accord explicite de Baptiste**. Ne jamais créer/déployer de ressource Azure ni ouvrir un compte payant sans son accord ; vérifier qu'un service est gratuit avant de le proposer ; `terraform destroy` après chaque session cloud.
-- Machine de dev : Ryzen 5 5600H, 16 Go RAM, GPU AMD 4 Go (accélération Ollama incertaine) → modèles quantifiés 3B–8B, embeddings `nomic-embed-text`.
+- Machine de dev : Ryzen 5 5600H, 16 Go RAM, GPU AMD 4 Go (accélération Ollama incertaine) → modèles quantifiés 3B–8B, embeddings multilingues (`bge-m3` envisagé, corpus en français ; voir cadrage §8).
 - L'agent ne peut **jamais écrire sans validation humaine** ; chaque appel d'outil et décision est tracé dans l'audit.
 - Le RAG répond « je ne trouve pas l'information dans les documents » plutôt que d'inventer ; toujours citer les sources.
 - Mesurer avant d'affirmer : décisions de qualité appuyées par l'évaluation (Phase 5).
@@ -65,5 +66,5 @@ uv run uvicorn main:app --reload
 
 ## État d'avancement
 - [x] Préparation du terrain (dépôt, structure, CLAUDE.md)
-- [ ] Phase 0 — Cadrage (`docs/cadrage.md`)
+- [~] Phase 0 — Cadrage (`docs/cadrage.md`) : brouillon rédigé, à valider
 - [ ] Phases 1 à 6 : voir le plan

@@ -18,7 +18,7 @@ Machine de développement : Ryzen 5 5600H, 16 Go de RAM, Radeon RX 6500M 4 Go (a
 
 ## Alternatives écartées
 - **Azure payant avec alerte de budget** : contraire à la contrainte 0 €.
-- **Tout local, jamais Azure** : zéro risque mais moins convaincant pour une offre centrée Azure ; conservé comme plan de repli (« IaC validée, non déployée » + démo vidéo locale).
+- **Tout local, jamais Azure** : zéro risque mais moins convaincant pour un projet centré Azure ; conservé comme plan de repli (« IaC validée, non déployée » + démo vidéo locale).
 
 ## Conséquences
 - (+) Aucun risque de facture ; le projet avance sans attendre Azure.
