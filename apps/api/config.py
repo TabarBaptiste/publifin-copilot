@@ -10,8 +10,16 @@ class Settings(BaseSettings):
 
     ollama_base_url: str = "http://localhost:11434"
     ollama_embed_model: str = "bge-m3"
+    ollama_chat_model: str = "qwen3:4b-instruct"
+    chat_context_tokens: int = 8192
+    chat_timeout_seconds: float = 180
+
     corpus_dir: Path = REPO_ROOT / "data" / "corpus"
     vector_store_dir: Path = REPO_ROOT / "data" / "chroma"
+
+    top_k: int = 5
+    # Passages farther than this (cosine distance) are considered unrelated to the question.
+    max_distance: float = 0.45
 
 
 settings = Settings()

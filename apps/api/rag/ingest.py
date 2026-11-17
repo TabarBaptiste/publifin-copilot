@@ -8,7 +8,7 @@ import time
 import chromadb
 
 from config import settings
-from providers.ollama import embed
+from providers import get_provider
 from rag.chunking import chunk_pdf
 
 COLLECTION = "corpus"
@@ -20,6 +20,7 @@ def main() -> None:
     if not pdfs:
         raise SystemExit(f"No PDF in {settings.corpus_dir}: run scripts/download_corpus.py first.")
 
+    provider = get_provider()
     client = chromadb.PersistentClient(path=str(settings.vector_store_dir))
     # Rebuild from scratch so the store always matches the corpus folder.
     if COLLECTION in [c.name for c in client.list_collections()]:
@@ -34,7 +35,7 @@ def main() -> None:
             collection.add(
                 ids=[f"{c.source}:{c.page}:{c.index}" for c in batch],
                 documents=[c.text for c in batch],
-                embeddings=embed([c.text for c in batch]),
+                embeddings=provider.embed([c.text for c in batch]),
                 metadatas=[{"source": c.source, "page": c.page} for c in batch],
             )
         print(f"{pdf.name}: {len(chunks)} chunks in {time.time() - started:.0f}s", flush=True)

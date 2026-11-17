@@ -1,14 +1,34 @@
 import httpx
 
 from config import settings
+from providers.base import ProviderUnavailable
 
 
-def embed(texts: list[str]) -> list[list[float]]:
-    """Return one embedding vector per text, computed by the local Ollama server."""
-    response = httpx.post(
-        f"{settings.ollama_base_url}/api/embed",
-        json={"model": settings.ollama_embed_model, "input": texts},
-        timeout=300,
-    )
-    response.raise_for_status()
-    return response.json()["embeddings"]
+class OllamaProvider:
+    """LLM provider backed by a local Ollama server."""
+
+    def _post(self, path: str, payload: dict, timeout: float) -> dict:
+        try:
+            response = httpx.post(
+                f"{settings.ollama_base_url}{path}", json=payload, timeout=timeout
+            )
+            response.raise_for_status()
+        except httpx.HTTPError as error:
+            raise ProviderUnavailable(f"Ollama: {error!r}") from error
+        return response.json()
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        payload = {"model": settings.ollama_embed_model, "input": texts}
+        return self._post("/api/embed", payload, timeout=300)["embeddings"]
+
+    def chat(self, messages: list[dict[str, str]]) -> str:
+        payload = {
+            "model": settings.ollama_chat_model,
+            "messages": messages,
+            "stream": False,
+            "think": False,
+            "options": {"temperature": 0.1, "num_ctx": settings.chat_context_tokens},
+        }
+        return self._post("/api/chat", payload, timeout=settings.chat_timeout_seconds)["message"][
+            "content"
+        ]
