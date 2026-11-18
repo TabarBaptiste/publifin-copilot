@@ -84,7 +84,9 @@ npm run lint && npx tsc --noEmit && npm run build
 ## État d'avancement
 - [x] Préparation du terrain (dépôt, structure, CLAUDE.md)
 - [x] Phase 0 — Cadrage (`docs/cadrage.md`), validé
-- [~] Phase 1 — RAG local : fait (corpus 6 PDF, ingestion, /ask avec citations et refus, tests, jeu de 17 questions `eval/`) ; reste : LLMProvider Azure (Phase 2), latence (< 30 s visés)
+- [~] Phase 1 — RAG local : fait (corpus 6 PDF, ingestion, /ask avec citations et refus, tests, jeu de 17 questions `eval/`) ; latence réglée (préchauffage)
 - [~] Front Next.js (Phase 2, partie locale) : page de question, réponse citée, sources cliquables, états chargement/erreur/refus
 - [~] Préparation Azure à blanc : Dockerfile de l'API testé, Terraform (5 modules + envs/dev) validé sans déploiement (ADR 0003)
+- [x] CI GitHub Actions écrite (`ci.yml` : API, web, Terraform ; `docker.yml` : image sur GHCR) — à vérifier au premier push
+- [~] Code Azure prêt et testé sans compte : `AzureOpenAIProvider`, `AzureSearchStore`, bascule par `LLM_PROVIDER=azure_openai` (ADR 0004) ; jamais exécuté en réel
 - [ ] Phases 2 à 6 : voir le plan

@@ -131,3 +131,31 @@ resource "azurerm_role_assignment" "api_storage" {
   role_definition_name = "Storage Blob Data Reader"
   principal_id         = module.api.principal_id
 }
+
+# The person running Terraform also ingests the corpus from their machine (python -m rag.ingest
+# with LLM_PROVIDER=azure_openai): same keyless access, with the write roles the API does not get.
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_role_assignment" "deployer_openai" {
+  scope                = module.openai.id
+  role_definition_name = "Cognitive Services OpenAI User"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "deployer_search_service" {
+  scope                = module.search.id
+  role_definition_name = "Search Service Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "deployer_search_data" {
+  scope                = module.search.id
+  role_definition_name = "Search Index Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+resource "azurerm_role_assignment" "deployer_storage" {
+  scope                = module.storage.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
+}

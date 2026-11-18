@@ -92,7 +92,7 @@ Objectif : un RAG qui marche sur ta machine, sans Azure.
 - [x] Calculer les embeddings et les stocker dans une base vectorielle locale (Chroma, ou pgvector sur ton PostgreSQL).
 - [x] Endpoint FastAPI `POST /ask` : recherche des morceaux pertinents → prompt → réponse **avec citations** (fichier + page).
 - [x] Garde-fou : si aucun passage pertinent, l'assistant répond « je ne trouve pas l'information dans les documents » au lieu d'inventer.
-- [~] Une interface d'abstraction `LLMProvider` pour passer d'Ollama à Azure OpenAI par une variable d'environnement. *(Ollama fait ; Azure OpenAI en Phase 2)*
+- [x] Une interface d'abstraction `LLMProvider` pour passer d'Ollama à Azure OpenAI par une variable d'environnement. *(code et tests faits ; Azure OpenAI jamais appelé pour de vrai, voir ADR 0004)*
 - [x] Tests unitaires sur le découpage et le format des réponses.
 
 **Ce que tu apprends :** Python moderne, chaîne RAG complète, prompt avec citations.
@@ -119,7 +119,7 @@ Objectif : pouvoir détruire et recréer tout l'environnement en une commande. C
 - [~] Décrire toute l'infra en **Terraform** : resource group, OpenAI, AI Search, Storage, Container Apps, Key Vault, Log Analytics, Application Insights, rôles RBAC. *(écrit et validé à blanc, sans Key Vault ni registre : voir ADR 0003)*
 - [x] Découper en **modules réutilisables** (`modules/ai-search`, `modules/container-app`…) et un dossier par environnement (`envs/dev`).
 - [~] Stocker l'état Terraform dans un Storage Account distant. *(backend configuré ; Storage Account de l'état à créer à l'ouverture d'Azure)*
-- [ ] Pipeline **GitHub Actions** :
+- [~] Pipeline **GitHub Actions** : *(CI faite : lint, tests, front, `terraform validate`, build et publication de l'image sur GHCR ; `plan`, évaluation RAG et déploiement viendront avec Azure et la Phase 5)*
   - sur pull request : lint, tests, `terraform plan`, évaluation RAG (phase 5) ;
   - sur merge : build de l'image, push dans Azure Container Registry, déploiement.
 - [ ] Authentifier GitHub Actions sur Azure par **OIDC** (pas de secret stocké dans GitHub).
