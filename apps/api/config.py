@@ -36,6 +36,11 @@ class Settings(BaseSettings):
 
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    # Agent: audit log, approved notes and graph checkpoints (docker compose up -d db).
+    database_url: str = "postgresql://publifin:publifin@localhost:5433/publifin"
+    agent_max_tokens: int = 12000  # token budget per analysis (estimated: 1 token ~ 3.5 characters)
+    agent_timeout_seconds: float = 600  # wall-clock limit per analysis
+
     top_k: int = 2
     # Passages farther than this (cosine distance) are considered unrelated to the question.
     max_distance: float = 0.43

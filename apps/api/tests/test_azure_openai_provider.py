@@ -79,3 +79,15 @@ def test_provider_is_chosen_by_configuration(monkeypatch):
     monkeypatch.setattr(settings, "llm_provider", "inconnu")
     with pytest.raises(ValueError):
         get_provider()
+
+
+def test_json_mode_is_requested_when_a_schema_is_given():
+    client = FakeClient()
+
+    AzureOpenAIProvider(client).chat(
+        [{"role": "user", "content": "q"}], json_schema={"type": "object"}
+    )
+    AzureOpenAIProvider(client).chat([{"role": "user", "content": "q"}])
+
+    assert client.calls[0][1]["response_format"] == {"type": "json_object"}
+    assert "response_format" not in client.calls[1][1]

@@ -1,0 +1,19 @@
+# Local services. Development credentials only: never reuse them elsewhere.
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: publifin
+      POSTGRES_PASSWORD: publifin
+      POSTGRES_DB: publifin
+    ports:
+      - "5433:5432" # 5433 on the host so it does not clash with a Postgres already installed
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U publifin"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:

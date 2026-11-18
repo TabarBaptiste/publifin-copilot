@@ -5,6 +5,5 @@ __pycache__
 .ruff_cache
 tests
 scripts
-agent
 Dockerfile
 .dockerignore

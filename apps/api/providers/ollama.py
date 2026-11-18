@@ -25,7 +25,7 @@ class OllamaProvider:
         }
         return self._post("/api/embed", payload, timeout=300)["embeddings"]
 
-    def chat(self, messages: list[dict[str, str]]) -> str:
+    def chat(self, messages: list[dict[str, str]], json_schema: dict | None = None) -> str:
         payload = {
             "model": settings.ollama_chat_model,
             "messages": messages,
@@ -34,6 +34,8 @@ class OllamaProvider:
             "keep_alive": settings.ollama_keep_alive,
             "options": {"temperature": 0.1, "num_ctx": settings.chat_context_tokens},
         }
+        if json_schema:
+            payload["format"] = json_schema  # Ollama constrains the output to this schema
         return self._post("/api/chat", payload, timeout=settings.chat_timeout_seconds)["message"][
             "content"
         ]

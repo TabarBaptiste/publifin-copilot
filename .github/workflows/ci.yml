@@ -17,6 +17,20 @@ jobs:
   api:
     name: API (lint + tests)
     runs-on: ubuntu-latest
+    # Real PostgreSQL for the agent integration tests (audit log, checkpoints).
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: publifin
+          POSTGRES_PASSWORD: publifin
+          POSTGRES_DB: publifin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U publifin" --health-interval 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://publifin:publifin@localhost:5432/publifin
     defaults:
       run:
         working-directory: apps/api

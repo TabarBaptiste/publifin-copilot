@@ -146,11 +146,11 @@ Le chargé d'affaires saisit : « La commune de X demande 2 M€ pour rénover s
 
 ### À implémenter
 
-- [ ] Graphe **LangGraph** avec un état typé, un nœud par étape, et un *interrupt* avant l'enregistrement.
-- [ ] Outils définis avec des schémas d'entrée stricts (Pydantic) et des droits minimaux : l'agent ne peut pas écrire sans validation.
-- [ ] **Journal d'audit** dans PostgreSQL : chaque appel d'outil (entrée, sortie, durée), chaque décision humaine (qui, quand, quoi).
-- [ ] Limites : nombre maximum d'étapes, timeout, budget de tokens par exécution.
-- [ ] Dans le front : timeline des étapes de l'agent + écran de validation.
+- [x] Graphe **LangGraph** avec un état typé, un nœud par étape, et un *interrupt* avant l'enregistrement.
+- [x] Outils définis avec des schémas d'entrée stricts (Pydantic) et des droits minimaux : l'agent ne peut pas écrire sans validation.
+- [x] **Journal d'audit** dans PostgreSQL : chaque appel d'outil (entrée, sortie, durée), chaque décision humaine (qui, quand, quoi).
+- [x] Limites : nombre maximum d'étapes, timeout, budget de tokens par exécution. *(25 étapes, 12 000 tokens, 600 s)*
+- [x] Dans le front : timeline des étapes de l'agent + écran de validation.
 - [ ] Variante pour aller plus loin : refaire un outil avec **Semantic Kernel** et noter les différences dans un ADR.
 
 **Ce que tu apprends :** conception d'agents, orchestration, human-in-the-loop, traçabilité.

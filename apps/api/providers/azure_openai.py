@@ -40,10 +40,17 @@ class AzureOpenAIProvider:
             raise ProviderUnavailable(f"Azure OpenAI: {error!r}") from error
         return [item.embedding for item in response.data]
 
-    def chat(self, messages: list[dict[str, str]]) -> str:
+    def chat(self, messages: list[dict[str, str]], json_schema: dict | None = None) -> str:
+        options: dict[str, Any] = {}
+        if json_schema:
+            # json_object mode: the prompt must describe the expected fields and mention JSON.
+            options["response_format"] = {"type": "json_object"}
         try:
             response = self._client.chat.completions.create(
-                model=settings.azure_openai_chat_deployment, messages=messages, temperature=0.1
+                model=settings.azure_openai_chat_deployment,
+                messages=messages,
+                temperature=0.1,
+                **options,
             )
         except (OpenAIError, AzureError, CredentialUnavailableError) as error:
             raise ProviderUnavailable(f"Azure OpenAI: {error!r}") from error

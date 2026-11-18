@@ -10,8 +10,11 @@ class LLMProvider(Protocol):
         """One embedding vector per text."""
         ...
 
-    def chat(self, messages: list[dict[str, str]]) -> str:
-        """Answer to a list of {"role", "content"} messages."""
+    def chat(self, messages: list[dict[str, str]], json_schema: dict | None = None) -> str:
+        """Answer to a list of {"role", "content"} messages.
+
+        With json_schema, the reply is a JSON document following that schema.
+        """
         ...
 
     def warm_up(self) -> None:

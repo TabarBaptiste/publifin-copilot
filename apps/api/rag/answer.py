@@ -47,6 +47,18 @@ def cited_indices(text: str, count: int) -> list[int]:
     return seen
 
 
+def renumber_citations(text: str, cited: list[int]) -> str:
+    """Rewrite citations as [1], [2]... in order of first appearance; drop invalid ones."""
+    numbering = {old: new for new, old in enumerate(cited, start=1)}
+    return re.sub(
+        r"\[(\d+)\]",
+        lambda match: (
+            f"[{numbering[int(match.group(1))]}]" if int(match.group(1)) in numbering else ""
+        ),
+        text,
+    )
+
+
 def answer_question(
     question: str,
     provider: LLMProvider,
@@ -61,13 +73,5 @@ def answer_question(
     if not cited or NOT_FOUND in text:
         # No valid citation means the answer is not grounded in the documents.
         return Answer(NOT_FOUND, [], refused=True)
-    # Renumber so the text uses [1], [2]... matching the returned sources; drop invalid numbers.
-    numbering = {old: new for new, old in enumerate(cited, start=1)}
-    text = re.sub(
-        r"\[(\d+)\]",
-        lambda match: (
-            f"[{numbering[int(match.group(1))]}]" if int(match.group(1)) in numbering else ""
-        ),
-        text,
-    )
+    text = renumber_citations(text, cited)
     return Answer(text, [passages[i - 1] for i in cited], refused=False)

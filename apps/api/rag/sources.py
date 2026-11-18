@@ -17,3 +17,9 @@ TITLES = {
     "ofgl-rapport-2025-vue-d-ensemble.pdf": "OFGL — Finances des collectivités locales (édition 2025)",
     "dgcl-cl-en-chiffres-2025-ch1-synthese.pdf": "DGCL — Collectivités locales en chiffres 2025, synthèse",
 }
+
+
+def page_url(source: str, page: int) -> str | None:
+    """Official document opened at the cited page (PDF viewers read the #page fragment)."""
+    url = SOURCES.get(source)
+    return f"{url}#page={page}" if url else None

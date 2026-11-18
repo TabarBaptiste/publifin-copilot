@@ -12,7 +12,7 @@ class FakeProvider:
     def embed(self, texts):
         return [[0.0] for _ in texts]
 
-    def chat(self, messages):
+    def chat(self, messages, json_schema=None):
         self.calls += 1
         if self.fail:
             raise ProviderUnavailable("down")

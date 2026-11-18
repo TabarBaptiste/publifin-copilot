@@ -32,3 +32,14 @@ def test_warm_up_loads_chat_model_with_the_same_context_size_as_chat(monkeypatch
     assert generate["model"] == settings.ollama_chat_model
     assert generate["options"]["num_ctx"] == settings.chat_context_tokens
     assert any(path == "/api/embed" for path, _ in calls)
+
+
+def test_json_schema_is_passed_to_ollama_as_format(monkeypatch):
+    calls = capture_calls(monkeypatch)
+    schema = {"type": "object", "properties": {"a": {"type": "string"}}}
+
+    OllamaProvider().chat([{"role": "user", "content": "q"}], json_schema=schema)
+    OllamaProvider().chat([{"role": "user", "content": "q"}])
+
+    assert calls[0][1]["format"] == schema
+    assert "format" not in calls[1][1]

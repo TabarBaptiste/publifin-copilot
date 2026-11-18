@@ -16,6 +16,7 @@ WORKDIR /srv/apps/api
 COPY --from=build /srv/apps/api/.venv .venv
 COPY config.py main.py ./
 COPY providers providers
+COPY agent agent
 COPY rag rag
 RUN mkdir -p /srv/data && chown app /srv/data
 USER app
