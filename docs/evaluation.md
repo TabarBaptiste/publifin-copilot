@@ -29,3 +29,21 @@ Les refus des questions pièges prennent 2 s : le garde-fou de distance n'appell
 
 ### Limites
 17 questions, une seule exécution par configuration (le modèle est légèrement non déterministe) : ces chiffres donnent un ordre de grandeur, pas une preuve. La Phase 5 ajoutera des questions, des reformulations et une mesure de fidélité par un juge.
+
+## Phase 1 — latence à froid (2026-11-18)
+
+Quand Ollama a déchargé les modèles (par défaut après 5 minutes sans requête), la première question doit d'abord les recharger. Mesure sur 3 questions différentes (pour éviter que le cache de prompt d'Ollama fausse la comparaison) :
+
+| Situation | Total | Recherche (embedding) | Chargement du modèle de chat | Lecture du prompt | Génération |
+| --- | --- | --- | --- | --- | --- |
+| Froid (modèles déchargés) | 30,1 s | 5,6 s | 4,8 s | 13,1 s (1 716 tokens) | 4,5 s |
+| Chaud (2ᵉ question) | 18,7 s | 2,1 s | 0 s | 8,3 s (1 401 tokens) | 6,0 s |
+| Après préchauffage | 18,8 s | 2,1 s | 0 s | 7,2 s (1 191 tokens) | 7,4 s |
+
+Le surcoût à froid est d'environ 10 s (chargement des deux modèles, puis lecture du prompt plus lente le temps que la mémoire « chauffe »).
+
+### Mesures prises
+- **Préchauffage au démarrage de l'API** : chargement des deux modèles dans un thread, sans bloquer `/health` (12,9 s). La taille de contexte (`num_ctx`) doit être la même que pour les questions, sinon Ollama recharge le modèle à la première question.
+- **`keep_alive = 30m`** sur chaque appel : les modèles restent en mémoire 30 minutes après la dernière question au lieu de 5. Coût : environ 4,5 Go de RAM occupés pendant ce temps.
+
+Ces chiffres varient selon la charge de la machine : la même question a pris 65 s lors d'un test dans le navigateur, avec d'autres programmes actifs (cause exacte non mesurée).

@@ -13,3 +13,7 @@ class LLMProvider(Protocol):
     def chat(self, messages: list[dict[str, str]]) -> str:
         """Answer to a list of {"role", "content"} messages."""
         ...
+
+    def warm_up(self) -> None:
+        """Load the models in memory so the first question is not slowed down."""
+        ...

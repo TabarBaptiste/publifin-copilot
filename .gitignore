@@ -26,6 +26,7 @@ out/
 *.tfvars
 !*.tfvars.example
 crash.log
+backend.hcl
 
 # Données locales
 data/corpus/*

@@ -69,6 +69,13 @@ uv run python scripts/download_corpus.py   # télécharge les PDF (docs/corpus.m
 uv run python -m rag.ingest                # chunking + embeddings (Ollama) -> data/chroma
 uv run python scripts/eval_retrieval.py    # qualité de la recherche sur eval/questions.jsonl (sans LLM)
 
+# Image Docker de l'API (Ollama de l'hôte, index local monté)
+docker build -t publifin-api apps/api
+docker run --rm -p 8000:8000 -v "$PWD/data:/srv/data" -e OLLAMA_BASE_URL=http://host.docker.internal:11434 publifin-api
+
+# Terraform (à blanc, gratuit ; apply seulement avec accord explicite)
+cd infra && terraform fmt -check -recursive && cd envs/dev && terraform init -backend=false && terraform validate
+
 # Front (Next.js 16, http://localhost:3000 ; API attendue sur NEXT_PUBLIC_API_URL, défaut localhost:8000)
 cd apps/web && npm install && npm run dev
 npm run lint && npx tsc --noEmit && npm run build
@@ -79,4 +86,5 @@ npm run lint && npx tsc --noEmit && npm run build
 - [x] Phase 0 — Cadrage (`docs/cadrage.md`), validé
 - [~] Phase 1 — RAG local : fait (corpus 6 PDF, ingestion, /ask avec citations et refus, tests, jeu de 17 questions `eval/`) ; reste : LLMProvider Azure (Phase 2), latence (< 30 s visés)
 - [~] Front Next.js (Phase 2, partie locale) : page de question, réponse citée, sources cliquables, états chargement/erreur/refus
+- [~] Préparation Azure à blanc : Dockerfile de l'API testé, Terraform (5 modules + envs/dev) validé sans déploiement (ADR 0003)
 - [ ] Phases 2 à 6 : voir le plan

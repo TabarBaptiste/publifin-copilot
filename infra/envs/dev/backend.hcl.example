@@ -1,0 +1,6 @@
+# Copier vers backend.hcl (ignoré par git). Le Storage Account de l'état est créé une fois à la main.
+resource_group_name  = "rg-publifin-tfstate"
+storage_account_name = "<nom-unique>"
+container_name       = "tfstate"
+key                  = "dev.terraform.tfstate"
+use_azuread_auth     = true

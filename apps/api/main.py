@@ -1,3 +1,7 @@
+import logging
+import threading
+from contextlib import asynccontextmanager
+
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -9,7 +13,25 @@ from rag.answer import answer_question
 from rag.retrieval import search
 from rag.sources import SOURCES, TITLES
 
-app = FastAPI(title="PubliFin Copilot API")
+logger = logging.getLogger("uvicorn.error")
+
+
+def warm_up_models() -> None:
+    try:
+        get_provider().warm_up()
+        logger.info("LLM models loaded")
+    except ProviderUnavailable as error:
+        logger.warning("LLM warm-up failed, first question will be slower: %s", error)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    # In the background: the API answers /health immediately while models load.
+    threading.Thread(target=warm_up_models, daemon=True).start()
+    yield
+
+
+app = FastAPI(title="PubliFin Copilot API", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,

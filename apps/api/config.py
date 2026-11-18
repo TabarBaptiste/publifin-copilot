@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     ollama_chat_model: str = "qwen3:4b-instruct"
     chat_context_tokens: int = 8192
     chat_timeout_seconds: float = 180
+    # How long Ollama keeps a model in memory after a request (its default is 5 minutes).
+    # Both models together use about 4.5 GB of RAM.
+    ollama_keep_alive: str = "30m"
 
     corpus_dir: Path = REPO_ROOT / "data" / "corpus"
     vector_store_dir: Path = REPO_ROOT / "data" / "chroma"

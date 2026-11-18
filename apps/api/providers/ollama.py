@@ -18,7 +18,11 @@ class OllamaProvider:
         return response.json()
 
     def embed(self, texts: list[str]) -> list[list[float]]:
-        payload = {"model": settings.ollama_embed_model, "input": texts}
+        payload = {
+            "model": settings.ollama_embed_model,
+            "input": texts,
+            "keep_alive": settings.ollama_keep_alive,
+        }
         return self._post("/api/embed", payload, timeout=300)["embeddings"]
 
     def chat(self, messages: list[dict[str, str]]) -> str:
@@ -27,8 +31,20 @@ class OllamaProvider:
             "messages": messages,
             "stream": False,
             "think": False,
+            "keep_alive": settings.ollama_keep_alive,
             "options": {"temperature": 0.1, "num_ctx": settings.chat_context_tokens},
         }
         return self._post("/api/chat", payload, timeout=settings.chat_timeout_seconds)["message"][
             "content"
         ]
+
+    def warm_up(self) -> None:
+        # A generate call without prompt only loads the model. num_ctx must match chat(),
+        # otherwise Ollama reloads the model on the first real question.
+        payload = {
+            "model": settings.ollama_chat_model,
+            "keep_alive": settings.ollama_keep_alive,
+            "options": {"num_ctx": settings.chat_context_tokens},
+        }
+        self._post("/api/generate", payload, timeout=settings.chat_timeout_seconds)
+        self.embed(["préchauffage"])

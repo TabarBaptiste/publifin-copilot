@@ -106,7 +106,7 @@ Objectif : la même chose, en version cloud, déployée à la main d'abord (pour
 - [ ] Créer Azure AI Search, définir l'index (champs texte, vecteur, métadonnées), passer l'ingestion dessus.
 - [ ] Activer la **recherche hybride** (mots-clés + vecteurs) et comparer la qualité avec la version locale.
 - [ ] Stocker les PDF dans Blob Storage.
-- [ ] Conteneuriser l'API (Dockerfile) et la déployer sur Azure Container Apps.
+- [~] Conteneuriser l'API (Dockerfile) et la déployer sur Azure Container Apps. *(Dockerfile fait et testé en local ; déploiement à faire pendant la fenêtre Azure)*
 - [ ] Supprimer toute clé en dur : **Managed Identity** pour accéder à OpenAI, Search et Blob ; Key Vault pour le reste.
 - [x] Brancher le front Next.js : zone de question, réponse, liste des sources cliquables.
 
@@ -116,9 +116,9 @@ Objectif : la même chose, en version cloud, déployée à la main d'abord (pour
 
 Objectif : pouvoir détruire et recréer tout l'environnement en une commande. C'est la mission « plateforme sécurisée de prototypage ».
 
-- [ ] Décrire toute l'infra en **Terraform** : resource group, OpenAI, AI Search, Storage, Container Apps, Key Vault, Log Analytics, Application Insights, rôles RBAC.
-- [ ] Découper en **modules réutilisables** (`modules/ai-search`, `modules/container-app`…) et un dossier par environnement (`envs/dev`).
-- [ ] Stocker l'état Terraform dans un Storage Account distant.
+- [~] Décrire toute l'infra en **Terraform** : resource group, OpenAI, AI Search, Storage, Container Apps, Key Vault, Log Analytics, Application Insights, rôles RBAC. *(écrit et validé à blanc, sans Key Vault ni registre : voir ADR 0003)*
+- [x] Découper en **modules réutilisables** (`modules/ai-search`, `modules/container-app`…) et un dossier par environnement (`envs/dev`).
+- [~] Stocker l'état Terraform dans un Storage Account distant. *(backend configuré ; Storage Account de l'état à créer à l'ouverture d'Azure)*
 - [ ] Pipeline **GitHub Actions** :
   - sur pull request : lint, tests, `terraform plan`, évaluation RAG (phase 5) ;
   - sur merge : build de l'image, push dans Azure Container Registry, déploiement.

@@ -1,0 +1,4 @@
+# Copier vers terraform.tfvars (ignoré par git) et compléter.
+api_image         = "ghcr.io/<owner>/publifin-api:<tag>"
+budget_start_date = "2026-12-01T00:00:00Z"
+alert_emails      = ["<votre-adresse>@example.com"]
