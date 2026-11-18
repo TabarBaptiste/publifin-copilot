@@ -77,6 +77,12 @@ export function AnalysisPanel() {
     void start(text);
   }
 
+  function onDecided(result: Analysis) {
+    setAnalysis(result);
+    // Once decided (approved or rejected), reset the form so a new request starts clean.
+    if (result.status === "rejected" || result.status === "approved") setText("");
+  }
+
   function askExample(example: string) {
     setText(example);
     void start(example);
@@ -140,12 +146,14 @@ export function AnalysisPanel() {
 
         {analysis && (
           <>
-            <section aria-labelledby="steps-title" className={styles.section}>
-              <h2 id="steps-title" className={styles.sectionTitle}>
-                Étapes
-              </h2>
-              <StepTimeline steps={analysis.steps} status={analysis.status} />
-            </section>
+            {analysis.status !== "rejected" && analysis.status !== "approved" && (
+              <section aria-labelledby="steps-title" className={styles.section}>
+                <h2 id="steps-title" className={styles.sectionTitle}>
+                  Étapes
+                </h2>
+                <StepTimeline steps={analysis.steps} status={analysis.status} />
+              </section>
+            )}
 
             {analysis.status === "failed" && (
               <div className={styles.error} role="alert">
@@ -156,7 +164,7 @@ export function AnalysisPanel() {
             )}
 
             {analysis.status === "awaiting_review" && analysis.draft_note && (
-              <Review analysis={analysis} onDone={setAnalysis} onError={setError} />
+              <Review analysis={analysis} onDone={onDecided} onError={setError} />
             )}
 
             {analysis.status === "approved" && (
