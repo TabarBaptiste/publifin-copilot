@@ -20,7 +20,7 @@ cd apps/api && uv run python scripts/eval_retrieval.py
 Elle indique, pour chaque question, si un passage attendu est retrouvé dans le top 5 et à quelle distance, et ce que donnerait chaque seuil de pertinence.
 
 ## Limites
-17 questions : suffisant pour régler le seuil et le nombre d'extraits, pas pour conclure sur la qualité. La Phase 5 vise 30 à 50 questions (plus de variantes, reformulations, fautes de frappe).
+49 questions (28 de base, 10 reformulations ou fautes `paraphrase`/`typo` reliées par `variant_of`, 11 pièges) ; champ `category` : base, paraphrase, typo, trap. Banc : `apps/api/scripts/evaluate.py` (run, judge, report) ; résultats dans `eval/results/` ; analyse dans `docs/evaluation.md`. Seuil `max_distance` : voir la Phase 5, il reste fragile.
 
 ## Premier constat (recherche seule, bge-m3, 935 morceaux, 2026-11-17)
 - Passage attendu retrouvé : top 1 pour 9/12 questions, top 3 et top 5 pour 11/12. Seule `cnil-01` échoue : la fiche « sécurité » de la CNIL n'est pas remontée (la question parle de « fonctionnement », la fiche de « sécurité des données »).

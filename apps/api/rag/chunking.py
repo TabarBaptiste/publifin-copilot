@@ -38,10 +38,10 @@ def split_text(text: str, size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) 
     return [chunk for chunk in chunks if chunk]
 
 
-def chunk_pdf(path: Path) -> list[Chunk]:
+def chunk_pdf(path: Path, size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> list[Chunk]:
     """Read a PDF page by page and return its chunks, keeping file name and page number."""
     chunks: list[Chunk] = []
     for page_number, page in enumerate(PdfReader(path).pages, start=1):
-        for index, text in enumerate(split_text(page.extract_text() or "")):
+        for index, text in enumerate(split_text(page.extract_text() or "", size, overlap)):
             chunks.append(Chunk(text=text, source=path.name, page=page_number, index=index))
     return chunks

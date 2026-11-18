@@ -1,0 +1,31 @@
+{"id": "rgpd-01", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par l'extrait pertinent."}
+{"id": "rgpd-02", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par les extraits fournis."}
+{"id": "rgpd-04", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est factuelle et correspond à la réponse de référence, avec des informations tirées des documents fournis."}
+{"id": "rgpd-05", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est factuelle et correspond à la réponse de référence."}
+{"id": "aiact-01", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par les extraits fournis."}
+{"id": "aiact-02", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est appuyée par les extraits fournis."}
+{"id": "cdc-01", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par l'extrait fourni."}
+{"id": "cdc-02", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par les extraits fournis."}
+{"id": "cdc-03", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et aux extraits fournis."}
+{"id": "cdc-04", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et contient l'information exacte du nombre de communes."}
+{"id": "rgpd-06", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est factuelle et correspond à la réponse de référence."}
+{"id": "rgpd-07", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et aux extraits fournis."}
+{"id": "rgpd-08", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est factuelle et conforme à la réponse de référence."}
+{"id": "rgpd-09", "faithful": true, "correct": true, "reason": "La réponse est fidèle car elle contient toutes les affirmations de la réponse de référence. Elle est également correcte car elle utilise les mêmes chiffres et ne contient aucune contradiction."}
+{"id": "aiact-03", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par les extraits fournis."}
+{"id": "aiact-04", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par l'extrait pertinent."}
+{"id": "aiact-05", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par les extraits fournis."}
+{"id": "cnil-02", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est correcte."}
+{"id": "ofgl-01", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est correcte."}
+{"id": "ofgl-03", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est correcte."}
+{"id": "ofgl-04", "faithful": true, "correct": true, "reason": "La réponse est correcte et fidèle à la réponse de référence. Elle contient les chiffres clés et les informations pertinentes des documents fournis."}
+{"id": "cdc-05", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et à l'extrait fourni."}
+{"id": "cdc-06", "faithful": true, "correct": true, "reason": "La réponse est fidèle à la réponse de référence et contient les chiffres corrects."}
+{"id": "rgpd-01b", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par les extraits du document."}
+{"id": "rgpd-04b", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est factuelle et correspond à la réponse de référence, avec des références aux extraits pertinents."}
+{"id": "aiact-01b", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par l'extrait fourni."}
+{"id": "aiact-02b", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par les extraits fournis."}
+{"id": "cdc-01b", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est factuelle et correspond à la réponse de référence."}
+{"id": "cdc-03b", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est factuellement correcte."}
+{"id": "cdc-04b", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et est étayée par les extraits fournis."}
+{"id": "ofgl-01b", "faithful": true, "correct": true, "reason": "La réponse de l'assistant est fidèle à la réponse de référence et aux extraits fournis."}

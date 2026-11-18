@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     agent_max_tokens: int = 12000  # token budget per analysis (estimated: 1 token ~ 3.5 characters)
     agent_timeout_seconds: float = 600  # wall-clock limit per analysis
 
+    # Chunking (characters). Changing them requires re-ingesting into a separate VECTOR_STORE_DIR.
+    chunk_size: int = 2400
+    chunk_overlap: int = 300
+
     top_k: int = 2
     # Passages farther than this (cosine distance) are considered unrelated to the question.
     max_distance: float = 0.43

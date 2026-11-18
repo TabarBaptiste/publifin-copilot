@@ -24,7 +24,7 @@ def main() -> None:
     store.reset()
 
     for pdf in pdfs:
-        chunks = chunk_pdf(pdf)
+        chunks = chunk_pdf(pdf, settings.chunk_size, settings.chunk_overlap)
         started = time.time()
         for i in range(0, len(chunks), BATCH_SIZE):
             batch = chunks[i : i + BATCH_SIZE]

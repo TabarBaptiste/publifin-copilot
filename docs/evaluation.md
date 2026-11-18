@@ -47,3 +47,44 @@ Le surcoût à froid est d'environ 10 s (chargement des deux modèles, puis lect
 - **`keep_alive = 30m`** sur chaque appel : les modèles restent en mémoire 30 minutes après la dernière question au lieu de 5. Coût : environ 4,5 Go de RAM occupés pendant ce temps.
 
 Ces chiffres varient selon la charge de la machine : la même question a pris 65 s lors d'un test dans le navigateur, avec d'autres programmes actifs (cause exacte non mesurée).
+
+## Phase 5 — évaluation comparée (2026-11-18)
+
+### Méthode
+
+- **Jeu de test** : `eval/questions.jsonl`, 49 questions : 28 de base à réponse, 10 reformulations ou fautes de frappe, 11 pièges (hors corpus, hors sujet, tentative d'injection). Chaque fait et chaque page attendue ont été relus dans les PDF.
+- **Mesures** : (1) règle automatique (mots-clés attendus + page attendue citée ; pour un piège, le refus) ; (2) deux juges locaux croisés (`gemma3:4b`, `qwen3:4b-instruct`) qui notent fidélité (aucune affirmation hors extraits) et pertinence (même information que la référence) ; (3) latence de bout en bout, tokens estimés (3,5 caractères par token) et coût indicatif.
+- **Une variable à la fois** contre la base ; machine CPU seule, runs séquentiels. Commande : `uv run python scripts/evaluate.py run|judge|report` (résultats bruts dans `eval/results/`).
+- **Coût indicatif** : tarif supposé de classe gpt-4o-mini (0,15 $ / 0,60 $ par million de tokens), **à vérifier avant tout chiffrage** ; Ollama local coûte 0 €.
+
+### Résultats
+
+| Variante | Bonnes (règle) | Refus corrects | Passage retrouvé | Reform./fautes | Médiane | p95 | Coût /1000 q | Fidèle (gemma / qwen) | Pertinente (gemma / qwen) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `baseline` (2400/300, 2 extraits, qwen3:4b) | 23/38 | 11/11 | 29/38 | 6/10 | 19,1 s | 24,2 s | 0,21 $ | 33/34 · 24/34 | 33/34 · 24/34 |
+| `chunks1200-k4` (1200/150, 4 extraits) | **30/38** | 11/11 | **35/38** | **8/10** | 20,8 s | 27,0 s | 0,22 $ | 31/31 · 27/31 | 31/31 · 27/31 |
+| `gemma-k2` (gemma3:4b, 2 extraits) | 21/38 | 9/11 | 29/38 | 5/10 | **15,4 s** | **17,8 s** | 0,22 $ | 28/31 · 18/31 | 28/31 · 19/31 |
+
+Les juges ne notent que les réponses données (pas les refus) ; les dénominateurs diffèrent donc selon la variante.
+
+### Ce qu'on en retient
+
+1. **Morceaux de 1 200 caractères + 4 extraits : meilleure variante** (+7 bonnes réponses, +6 passages retrouvés, reformulations 8/10), pour +1,7 s de médiane et un coût de tokens identique (même budget de contexte). C'est l'effet de la granularité, pas du nombre d'extraits seul : on n'a pas isolé les deux facteurs (limite).
+2. **`gemma3:4b` plus rapide mais moins bon** : 21/38, 2 refus à tort manqués sur les pièges (9/11). Pas de gain de qualité qui justifie le changement.
+3. **Les juges locaux sont peu fiables.** `gemma3:4b` valide presque tout (fidèle 31/31 sur `chunks1200-k4`) ; `qwen3:4b-instruct` est plus sévère mais accorde ou refuse parfois contre la règle. Les deux juges sont d'accord sur 22 à 27 questions sur 31 selon la variante. Les verdicts de juge servent d'indice, **la règle (mots-clés + page) fait foi** ; une revue humaine d'un échantillon reste nécessaire avant d'afficher des taux de fidélité.
+4. **Pièges** : les 11 sont refusés par la base et par `chunks1200-k4`, y compris l'injection de prompt (`trap-11`). Mais le seuil `max_distance = 0,43` est fragile : la meilleure distance d'une question à réponse monte à 0,526 (`rgpd-07b`, refusée à tort) tandis qu'un piège descend à 0,351 (`trap-06`). Seuil 0,35 : 28/38 gardées, 11/11 refus corrects ; 0,40 : 35/38 et 9/11 ; 0,45 : 37/38 et 7/11. Aucun seuil unique ne sépare proprement les deux : c'est un argument pour la recherche hybride d'Azure AI Search (non testable avec Chroma) plutôt que pour un nouveau réglage.
+5. **Échecs de recherche réels restants** (`cnil-01`, `cnil-03`, `dgcl-01`…) : la fiche CNIL de 4 pages est dominée par sa page 1, et la page DGCL ne contient qu'une phrase courte.
+6. **Correction de mesure** : le mot-clé de `rgpd-04` avait des accents cassés et ne pouvait jamais correspondre ; le « faux négatif » de la Phase 1 venait de là. Les chiffres de la Phase 1 ne sont pas comparables à ceux-ci.
+7. **Latence** : ~20 s par réponse sur CPU, quelle que soit la variante ; c'est le modèle, pas la recherche. Le coût local est nul ; le coût cloud indicatif (~0,2 $ pour 1 000 questions) est négligeable face à la latence.
+
+### Recommandation : go sous conditions
+
+- **Go** pour garder le RAG local comme base de la suite, en adoptant **morceaux de 1 200/150 et 4 extraits** (`CHUNK_SIZE`, `CHUNK_OVERLAP`, `TOP_K`) et `qwen3:4b-instruct`. Il faut **ré-ingérer le corpus** avec ces valeurs (l'index par défaut est encore à 2 400/300).
+- **Conditions avant d'afficher des chiffres** : 8 questions restent en échec sur 38 (dont plusieurs de recherche) ; relire à la main un échantillon de réponses fidèles/pertinentes ; ne pas modifier `max_distance` sans mesure sur Azure AI Search (hybride).
+- **No-go** pour changer de modèle local (`gemma3:4b`) ou pour s'appuyer seul sur un juge 4B.
+
+### Limites
+
+- Corpus de 6 PDF, 49 questions : écarts d'une ou deux questions non significatifs.
+- Latences mesurées sur CPU seul, une exécution par variante ; le `baseline` a dû être repris après un délai dépassé d'Ollama (mesures de la reprise non perturbées).
+- Variantes non isolées (taille des morceaux et nombre d'extraits changent ensemble) ; recherche hybride, rerank et modèles Azure non évalués.

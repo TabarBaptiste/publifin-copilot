@@ -159,12 +159,12 @@ Le chargé d'affaires saisit : « La commune de X demande 2 M€ pour rénover s
 
 Objectif : prouver la qualité avec des chiffres, puis trancher comme un architecte.
 
-- [ ] Constituer un **jeu de test** de 30 à 50 questions avec la réponse attendue et la source attendue (dont quelques questions pièges sans réponse dans le corpus).
-- [ ] Mesurer avec Ragas ou promptfoo : fidélité aux sources, pertinence de la réponse, précision de la recherche, taux de refus correct.
-- [ ] Mesurer aussi latence, coût par question, et robustesse (questions reformulées, fautes de frappe).
-- [ ] Comparer au moins deux variantes : taille des chunks, recherche vectorielle seule vs hybride, deux modèles. Tableau de résultats dans `docs/evaluation.md`.
+- [x] Constituer un **jeu de test** de 30 à 50 questions avec la réponse attendue et la source attendue (dont quelques questions pièges sans réponse dans le corpus).
+- [~] Mesurer avec Ragas ou promptfoo : fidélité aux sources, pertinence de la réponse, précision de la recherche, taux de refus correct. *(banc maison + juges locaux, voir `docs/evaluation.md` ; Ragas/promptfoo non utilisés)*
+- [x] Mesurer aussi latence, coût par question, et robustesse (questions reformulées, fautes de frappe).
+- [~] Comparer au moins deux variantes : taille des chunks, recherche vectorielle seule vs hybride, deux modèles. Tableau de résultats dans `docs/evaluation.md`. *(fait : taille des morceaux, nombre d'extraits, 2 modèles ; hybride à tester sur Azure AI Search)*
 - [ ] Lancer l'évaluation automatiquement dans la CI : la PR échoue si la qualité baisse sous un seuil.
-- [ ] Rédiger une **recommandation argumentée** (1 page) : on industrialise, on fait évoluer ou on arrête, et à quelles conditions. C'est un livrable typique d'un architecte.
+- [x] Rédiger une **recommandation argumentée** (1 page) : on industrialise, on fait évoluer ou on arrête, et à quelles conditions. C'est un livrable typique d'un architecte.
 
 ## Phase 6 — Sécurité, RGPD et IA responsable (1 semaine, en continu)
 
