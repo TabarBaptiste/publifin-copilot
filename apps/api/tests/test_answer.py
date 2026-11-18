@@ -55,6 +55,17 @@ def test_answer_returns_only_cited_sources():
 
     assert not answer.refused
     assert [(s.source, s.page) for s in answer.sources] == [("b.pdf", 9)]
+    assert answer.text == "La durée est de 5 ans [1]."
+
+
+def test_citations_are_renumbered_and_invalid_ones_removed():
+    provider = FakeProvider(reply="A [3]. B [1]. C [9].")
+    passages = [passage(source="a.pdf"), passage(source="b.pdf"), passage(source="c.pdf")]
+
+    answer = answer_question("q", provider, lambda _: passages)
+
+    assert answer.text == "A [1]. B [2]. C ."
+    assert [s.source for s in answer.sources] == ["c.pdf", "a.pdf"]
 
 
 def test_refuses_when_the_answer_has_no_valid_citation():

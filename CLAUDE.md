@@ -68,10 +68,15 @@ uv run uvicorn main:app --reload   # http://localhost:8000/health
 uv run python scripts/download_corpus.py   # télécharge les PDF (docs/corpus.md)
 uv run python -m rag.ingest                # chunking + embeddings (Ollama) -> data/chroma
 uv run python scripts/eval_retrieval.py    # qualité de la recherche sur eval/questions.jsonl (sans LLM)
+
+# Front (Next.js 16, http://localhost:3000 ; API attendue sur NEXT_PUBLIC_API_URL, défaut localhost:8000)
+cd apps/web && npm install && npm run dev
+npm run lint && npx tsc --noEmit && npm run build
 ```
 
 ## État d'avancement
 - [x] Préparation du terrain (dépôt, structure, CLAUDE.md)
 - [x] Phase 0 — Cadrage (`docs/cadrage.md`), validé
 - [~] Phase 1 — RAG local : fait (corpus 6 PDF, ingestion, /ask avec citations et refus, tests, jeu de 17 questions `eval/`) ; reste : LLMProvider Azure (Phase 2), latence (< 30 s visés)
+- [~] Front Next.js (Phase 2, partie locale) : page de question, réponse citée, sources cliquables, états chargement/erreur/refus
 - [ ] Phases 2 à 6 : voir le plan

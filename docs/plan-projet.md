@@ -108,7 +108,7 @@ Objectif : la même chose, en version cloud, déployée à la main d'abord (pour
 - [ ] Stocker les PDF dans Blob Storage.
 - [ ] Conteneuriser l'API (Dockerfile) et la déployer sur Azure Container Apps.
 - [ ] Supprimer toute clé en dur : **Managed Identity** pour accéder à OpenAI, Search et Blob ; Key Vault pour le reste.
-- [ ] Brancher le front Next.js : zone de question, réponse, liste des sources cliquables.
+- [x] Brancher le front Next.js : zone de question, réponse, liste des sources cliquables.
 
 **Ce que tu apprends :** services Azure IA, identités managées, conteneurs, sécurité cloud de base.
 

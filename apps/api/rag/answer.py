@@ -61,4 +61,13 @@ def answer_question(
     if not cited or NOT_FOUND in text:
         # No valid citation means the answer is not grounded in the documents.
         return Answer(NOT_FOUND, [], refused=True)
+    # Renumber so the text uses [1], [2]... matching the returned sources; drop invalid numbers.
+    numbering = {old: new for new, old in enumerate(cited, start=1)}
+    text = re.sub(
+        r"\[(\d+)\]",
+        lambda match: (
+            f"[{numbering[int(match.group(1))]}]" if int(match.group(1)) in numbering else ""
+        ),
+        text,
+    )
     return Answer(text, [passages[i - 1] for i in cited], refused=False)

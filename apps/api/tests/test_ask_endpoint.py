@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 import main
 from providers import get_provider
 from rag.retrieval import Passage
+from rag.sources import SOURCES, TITLES
 from tests.test_answer import FakeProvider
 
 
@@ -17,7 +18,7 @@ def teardown_function():
 
 
 def test_ask_returns_answer_with_citations(monkeypatch):
-    passages = [Passage("Le délai est de 72 heures.", "rgpd.pdf", 12, 0.1)]
+    passages = [Passage("Le délai est de 72 heures.", "rgpd-reglement-2016-679.pdf", 12, 0.1)]
     client = client_with(FakeProvider("72 heures [1]."), monkeypatch, passages)
 
     response = client.post("/ask", json={"question": "Quel est le délai ?"})
@@ -26,7 +27,13 @@ def test_ask_returns_answer_with_citations(monkeypatch):
     body = response.json()
     assert body["refused"] is False
     assert body["sources"] == [
-        {"source": "rgpd.pdf", "page": 12, "extract": "Le délai est de 72 heures."}
+        {
+            "source": "rgpd-reglement-2016-679.pdf",
+            "title": TITLES["rgpd-reglement-2016-679.pdf"],
+            "page": 12,
+            "extract": "Le délai est de 72 heures.",
+            "url": SOURCES["rgpd-reglement-2016-679.pdf"] + "#page=12",
+        }
     ]
 
 
