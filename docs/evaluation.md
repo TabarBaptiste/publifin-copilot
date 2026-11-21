@@ -69,22 +69,26 @@ Les juges ne notent que les réponses données (pas les refus) ; les dénominate
 
 ### Ce qu'on en retient
 
-1. **Morceaux de 1 200 caractères + 4 extraits : meilleure variante** (+7 bonnes réponses, +6 passages retrouvés, reformulations 8/10), pour +1,7 s de médiane et un coût de tokens identique (même budget de contexte). C'est l'effet de la granularité, pas du nombre d'extraits seul : on n'a pas isolé les deux facteurs (limite).
-2. **`gemma3:4b` plus rapide mais moins bon** : 21/38, 2 refus à tort manqués sur les pièges (9/11). Pas de gain de qualité qui justifie le changement.
-3. **Les juges locaux sont peu fiables.** `gemma3:4b` valide presque tout (fidèle 31/31 sur `chunks1200-k4`) ; `qwen3:4b-instruct` est plus sévère mais accorde ou refuse parfois contre la règle. Les deux juges sont d'accord sur 22 à 27 questions sur 31 selon la variante. Les verdicts de juge servent d'indice, **la règle (mots-clés + page) fait foi** ; une revue humaine d'un échantillon reste nécessaire avant d'afficher des taux de fidélité.
-4. **Pièges** : les 11 sont refusés par la base et par `chunks1200-k4`, y compris l'injection de prompt (`trap-11`). Mais le seuil `max_distance = 0,43` est fragile : la meilleure distance d'une question à réponse monte à 0,526 (`rgpd-07b`, refusée à tort) tandis qu'un piège descend à 0,351 (`trap-06`). Seuil 0,35 : 28/38 gardées, 11/11 refus corrects ; 0,40 : 35/38 et 9/11 ; 0,45 : 37/38 et 7/11. Aucun seuil unique ne sépare proprement les deux : c'est un argument pour la recherche hybride d'Azure AI Search (non testable avec Chroma) plutôt que pour un nouveau réglage.
-5. **Échecs de recherche réels restants** (`cnil-01`, `cnil-03`, `dgcl-01`…) : la fiche CNIL de 4 pages est dominée par sa page 1, et la page DGCL ne contient qu'une phrase courte.
-6. **Correction de mesure** : le mot-clé de `rgpd-04` avait des accents cassés et ne pouvait jamais correspondre ; le « faux négatif » de la Phase 1 venait de là. Les chiffres de la Phase 1 ne sont pas comparables à ceux-ci.
+1. **Morceaux de 1 200 caractères + 4 extraits : meilleure variante** (+7 bonnes réponses, +6 passages retrouvés, reformulations 8/10), pour +1,7 s de médiane et un coût de tokens identique (même budget de contexte). Les deux facteurs changent ensemble et ne sont pas isolés (limite) ; « passage retrouvé » compte le top 4 contre le top 2 de la base, ce qui l'avantage mécaniquement.
+2. **`gemma3:4b` plus rapide mais moins bon** : 21/38 ; il laisse passer 2 pièges (`trap-06`, `trap-08`) et refuse à tort 7 questions à réponse. Pas de gain de qualité qui justifie le changement.
+3. **Les juges locaux sont peu fiables.** `gemma3:4b` valide presque tout (fidèle 31/31 sur `chunks1200-k4`) ; `qwen3:4b-instruct` est plus sévère mais accorde ou refuse parfois contre la règle. Les deux juges sont d'accord sur 22 à 27 verdicts sur 31 à 34 selon la variante. Les verdicts de juge servent d'indice, **la règle (mots-clés + page) fait foi** ; une revue humaine d'un échantillon reste nécessaire avant d'afficher des taux de fidélité.
+4. **Pièges** : les 11 sont refusés par la base et par `chunks1200-k4`, y compris l'injection de prompt (`trap-11`). Mais le seuil `max_distance = 0,43` est fragile : la meilleure distance d'une question à réponse monte à 0,526 (`rgpd-07b`, refusée à tort) tandis qu'un piège descend à 0,351 (`trap-06`). Sur l'index de base (recherche seule) : seuil 0,35 : 28/38 gardées, 11/11 refus corrects ; 0,40 : 35/38 et 9/11 ; 0,45 : 37/38 et 7/11. Aucun seuil unique ne sépare proprement les deux : c'est un argument pour la recherche hybride d'Azure AI Search (non testable avec Chroma) plutôt que pour un nouveau réglage.
+5. **Nature des 8 échecs de `chunks1200-k4`** : 7 sont des refus, aucun n'est une réponse inventée.
+   - 3 échecs de recherche (`cnil-01`, `cnil-03`, `dgcl-01`) : le bon passage n'est pas remonté, le refus est alors le bon réflexe. La fiche CNIL de 4 pages est dominée par sa page 1, la page DGCL ne contient qu'une phrase courte.
+   - 2 coupés par le seuil (`rgpd-02b` à 0,441, `rgpd-07b` à 0,518).
+   - 2 refusés alors que le bon passage est classé 1er ou 2e sous le seuil (`rgpd-03`, `ofgl-02`) : le modèle a refusé ou n'a pas cité de source valide (les deux cas donnent le même refus, le banc ne les distingue pas). À analyser.
+   - 1 réponse jugée incomplète (`rgpd-04`, voir point 6).
+6. **Correction de mesure** : le mot-clé de `rgpd-04` avait des accents cassés et ne pouvait jamais correspondre. Corrigé, `rgpd-04` échoue toujours : les réponses omettent « à tout moment », que la règle exige. C'est le « faux négatif » déjà noté en Phase 1 (règle stricte). Les chiffres de la Phase 1 ne sont pas comparables à ceux-ci.
 7. **Latence** : ~20 s par réponse sur CPU, quelle que soit la variante ; c'est le modèle, pas la recherche. Le coût local est nul ; le coût cloud indicatif (~0,2 $ pour 1 000 questions) est négligeable face à la latence.
 
 ### Recommandation : go sous conditions
 
 - **Go** pour garder le RAG local comme base de la suite, en adoptant **morceaux de 1 200/150 et 4 extraits** (`CHUNK_SIZE`, `CHUNK_OVERLAP`, `TOP_K`) et `qwen3:4b-instruct`. Il faut **ré-ingérer le corpus** avec ces valeurs (l'index par défaut est encore à 2 400/300).
-- **Conditions avant d'afficher des chiffres** : 8 questions restent en échec sur 38 (dont plusieurs de recherche) ; relire à la main un échantillon de réponses fidèles/pertinentes ; ne pas modifier `max_distance` sans mesure sur Azure AI Search (hybride).
+- **Conditions avant d'afficher des chiffres** : 8 questions restent en échec sur 38 (dont 3 de recherche et 2 refus inexpliqués, `rgpd-03` et `ofgl-02`) ; relire à la main un échantillon de réponses fidèles/pertinentes ; ne pas modifier `max_distance` sans mesure sur Azure AI Search (hybride).
 - **No-go** pour changer de modèle local (`gemma3:4b`) ou pour s'appuyer seul sur un juge 4B.
 
 ### Limites
 
 - Corpus de 6 PDF, 49 questions : écarts d'une ou deux questions non significatifs.
-- Latences mesurées sur CPU seul, une exécution par variante ; le `baseline` a dû être repris après un délai dépassé d'Ollama (mesures de la reprise non perturbées).
+- Latences mesurées sur CPU seul, une exécution par variante ; le `baseline` a dû être repris après un délai dépassé d'Ollama (ses 16 dernières questions ont été mesurées lors de la reprise).
 - Variantes non isolées (taille des morceaux et nombre d'extraits changent ensemble) ; recherche hybride, rerank et modèles Azure non évalués.

@@ -3,7 +3,8 @@
 Three steps, so a long run can be resumed and judged by several models:
 
   uv run python scripts/evaluate.py run baseline --top-k 2
-  uv run python scripts/evaluate.py run chunks1200-k4 --top-k 4 --index-dir data/chroma-1200
+  uv run python scripts/evaluate.py run chunks1200-k4 --top-k 4 \\
+      --index-dir data/variants/chunks-1200/chroma
   uv run python scripts/evaluate.py run gemma-k2 --top-k 2 --model gemma3:4b
   uv run python scripts/evaluate.py judge gemma3:4b baseline chunks1200-k4 gemma-k2
   uv run python scripts/evaluate.py report baseline chunks1200-k4 gemma-k2
