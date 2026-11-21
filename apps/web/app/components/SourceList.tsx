@@ -21,12 +21,41 @@ function ExternalIcon() {
   );
 }
 
-export function SourceList({ sources }: { sources: Source[] }) {
+function ChevronIcon() {
   return (
-    <section aria-labelledby="sources-title" className={styles.sources}>
-      <h2 id="sources-title" className={styles.sectionTitle}>
-        Sources
-      </h2>
+    <svg
+      className={styles.chevron}
+      viewBox="0 0 20 20"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m6 8 4 4 4-4" />
+    </svg>
+  );
+}
+
+/** Collapsible list of the cited documents. `scope` keeps anchors unique per answer. */
+export function SourceList({
+  sources,
+  scope,
+  open,
+}: {
+  sources: Source[];
+  scope: string;
+  open: boolean;
+}) {
+  return (
+    <details className={styles.sources} open={open}>
+      <summary className={styles.sourcesSummary}>
+        <ChevronIcon />
+        {sources.length > 1 ? `${sources.length} sources` : "1 source"}
+      </summary>
       <ol className={styles.sourceList}>
         {sources.map((source, index) => {
           const content = (
@@ -43,7 +72,7 @@ export function SourceList({ sources }: { sources: Source[] }) {
           return (
             <li
               key={`${source.source}-${source.page}`}
-              id={`source-${index + 1}`}
+              id={`${scope}-source-${index + 1}`}
               className={styles.sourceItem}
             >
               {source.url ? (
@@ -64,6 +93,6 @@ export function SourceList({ sources }: { sources: Source[] }) {
           );
         })}
       </ol>
-    </section>
+    </details>
   );
 }

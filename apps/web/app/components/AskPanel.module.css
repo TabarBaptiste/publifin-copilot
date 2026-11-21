@@ -4,81 +4,35 @@
   gap: calc(var(--space) * 4);
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space);
-}
-
-.label {
-  font-weight: 600;
-}
-
-.textarea {
-  width: 100%;
-  min-height: 96px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
-  font: inherit;
-  resize: vertical;
-}
-
-.textarea::placeholder {
-  color: var(--muted);
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--space) * 2);
-}
-
 .hint {
   color: var(--muted);
   font-size: 0.875rem;
   line-height: 1.5;
 }
 
-.primary,
+.sectionTitle {
+  font-size: 1.125rem;
+}
+
+/* ---- Buttons ---- */
+
 .secondary,
-.chip {
+.ghost,
+.chip,
+.send {
   min-height: 44px;
-  border-radius: var(--radius);
   font: inherit;
   cursor: pointer;
   transition:
     background-color 0.15s ease,
+    border-color 0.15s ease,
     transform 0.15s ease;
-}
-
-.primary {
-  padding: 0 20px;
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 600;
-}
-
-.primary:hover:not(:disabled) {
-  background: var(--accent-hover);
-}
-
-.primary:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.primary:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
 }
 
 .secondary {
   padding: 0 16px;
   border: 1px solid var(--border);
+  border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
 }
@@ -87,9 +41,25 @@
   border-color: var(--accent);
 }
 
-.sectionTitle {
-  font-size: 1.125rem;
+/* Quiet text button with an icon: copy, new conversation. */
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.875rem;
 }
+
+.ghost:hover {
+  background: var(--info-bg);
+  color: var(--text);
+}
+
+/* ---- Empty state ---- */
 
 .examples {
   display: flex;
@@ -110,6 +80,7 @@
   width: 100%;
   padding: 10px 14px;
   border: 1px solid var(--border);
+  border-radius: var(--radius);
   background: var(--surface);
   color: var(--text);
   text-align: left;
@@ -119,39 +90,67 @@
   border-color: var(--accent);
 }
 
-.results {
+/* ---- Thread ---- */
+
+.thread {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--space) * 4);
+  gap: calc(var(--space) * 5);
+}
+
+.turn {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space) * 2);
+  /* Keeps a scrolled-to exchange clear of the top edge. */
+  scroll-margin-top: 16px;
+}
+
+.userMessage {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 2px var(--radius);
+  background: var(--info-bg);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.reply {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+}
+
+.actions {
+  display: flex;
+  margin-left: -10px;
 }
 
 .status {
   display: flex;
-  align-items: center;
-  gap: calc(var(--space) * 2);
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
+  flex-direction: column;
+  gap: 2px;
 }
 
-.status > div {
-  flex: 1;
+.elapsed {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
-.spinner {
-  flex: none;
-  width: 20px;
-  height: 20px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
+/* Text lit by a moving highlight: "the assistant is working", no spinner needed. */
+.shimmer {
+  background: linear-gradient(90deg, var(--muted) 35%, var(--text) 50%, var(--muted) 65%) 0 0 /
+    250% 100%;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 1.8s linear infinite;
 }
 
-@keyframes spin {
+@keyframes shimmer {
   to {
-    transform: rotate(360deg);
+    background-position: -150% 0;
   }
 }
 
@@ -179,16 +178,16 @@
   background: var(--info-bg);
 }
 
-.answer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space);
-}
+/* ---- Answer and citations ---- */
 
 .answerText {
   font-size: 1.0625rem;
   line-height: 1.7;
   white-space: pre-line;
+}
+
+.citeWrap {
+  position: relative;
 }
 
 .cite {
@@ -210,10 +209,97 @@
   text-decoration: underline;
 }
 
+/* Hover card: only where a pointer can hover; touch screens use the source list below. */
+.citeCard {
+  display: none;
+}
+
+@media (hover: hover) {
+  .citeCard {
+    position: absolute;
+    z-index: 2;
+    bottom: calc(100% + 6px);
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: max-content;
+    max-width: min(340px, 80vw);
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+    visibility: hidden;
+  }
+
+  .citeWrap:hover .citeCard,
+  .citeWrap:focus-within .citeCard {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
+}
+
+.citeTitle {
+  font-weight: 600;
+}
+
+.citeExtract {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  color: var(--muted);
+}
+
+/* ---- Sources ---- */
+
 .sources {
   display: flex;
   flex-direction: column;
-  gap: calc(var(--space) * 1.5);
+  gap: var(--space);
+}
+
+.sourcesSummary {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 10px 0 6px;
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.sourcesSummary::-webkit-details-marker {
+  display: none;
+}
+
+.sourcesSummary:hover {
+  background: var(--info-bg);
+  color: var(--text);
+}
+
+.chevron {
+  transition: transform 0.15s ease;
+  transform: rotate(-90deg);
+}
+
+.sources[open] .chevron {
+  transform: none;
 }
 
 .sourceList {
@@ -251,7 +337,8 @@ a.sourceCard:hover,
 }
 
 .sourceItem {
-  scroll-margin-top: 24px;
+  /* Clears the sticky composer when a citation scrolls here. */
+  scroll-margin-block: 24px 140px;
 }
 
 .sourceNumber {
@@ -303,17 +390,100 @@ a.sourceCard:hover,
   white-space: nowrap;
 }
 
+/* ---- Composer: stays at the bottom of the screen while the thread scrolls ---- */
+
+.composer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: calc(var(--space) * 2) 0 var(--space);
+  background: linear-gradient(to bottom, transparent, var(--bg) 16px);
+}
+
+.form {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space);
+  padding: 6px 6px 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 6px);
+  background: var(--surface);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.06);
+  transition: border-color 0.15s ease;
+}
+
+.form:focus-within {
+  border-color: var(--accent);
+}
+
+.textarea {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  max-height: 200px;
+  padding: 10px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  resize: none;
+}
+
+.textarea:focus-visible {
+  /* The whole composer shows focus (border above), not the bare field. */
+  outline: none;
+}
+
+.textarea::placeholder {
+  color: var(--muted);
+}
+
+.send {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.send:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.send:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.composerMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--space) * 2);
+}
+
 @media (max-width: 520px) {
-  .row {
-    flex-direction: column-reverse;
-    align-items: stretch;
+  /* No keyboard shortcut to teach on a phone: keep only the new-conversation action. */
+  .keyHint {
+    display: none;
   }
 
-  .primary {
-    width: 100%;
+  .composerMeta {
+    justify-content: flex-end;
   }
 
-  .status {
-    flex-wrap: wrap;
+  .userMessage {
+    max-width: 92%;
   }
 }
