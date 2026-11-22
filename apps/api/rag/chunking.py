@@ -3,9 +3,10 @@ from pathlib import Path
 
 from pypdf import PdfReader
 
-# ~4 characters per token for French text: 2400 chars ≈ 600 tokens, 300 chars ≈ 75 tokens.
-CHUNK_SIZE = 2400
-CHUNK_OVERLAP = 300
+# ~4 characters per token for French text: 1200 chars ≈ 300 tokens, 150 chars ≈ 38 tokens.
+# 1200/150 chosen by the Phase 5 evaluation (docs/evaluation.md).
+CHUNK_SIZE = 1200
+CHUNK_OVERLAP = 150
 
 
 @dataclass(frozen=True)

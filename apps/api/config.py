@@ -42,10 +42,10 @@ class Settings(BaseSettings):
     agent_timeout_seconds: float = 600  # wall-clock limit per analysis
 
     # Chunking (characters). Changing them requires re-ingesting into a separate VECTOR_STORE_DIR.
-    chunk_size: int = 2400
-    chunk_overlap: int = 300
+    chunk_size: int = 1200
+    chunk_overlap: int = 150
 
-    top_k: int = 2
+    top_k: int = 4  # with 1200-character chunks: same context budget as 2 x 2400 (Phase 5)
     # Passages farther than this (cosine distance) are considered unrelated to the question.
     max_distance: float = 0.43
 

@@ -76,14 +76,15 @@ Les juges ne notent que les réponses données (pas les refus) ; les dénominate
 5. **Nature des 8 échecs de `chunks1200-k4`** : 7 sont des refus, aucun n'est une réponse inventée.
    - 3 échecs de recherche (`cnil-01`, `cnil-03`, `dgcl-01`) : le bon passage n'est pas remonté, le refus est alors le bon réflexe. La fiche CNIL de 4 pages est dominée par sa page 1, la page DGCL ne contient qu'une phrase courte.
    - 2 coupés par le seuil (`rgpd-02b` à 0,441, `rgpd-07b` à 0,518).
-   - 2 refusés alors que le bon passage est classé 1er ou 2e sous le seuil (`rgpd-03`, `ofgl-02`) : le modèle a refusé ou n'a pas cité de source valide (les deux cas donnent le même refus, le banc ne les distingue pas). À analyser.
+   - 2 refusés alors que la bonne page est classée 1re ou 2e sous le seuil (`rgpd-03`, `ofgl-02`). Analyse (sortie brute du modèle relue) : c'est le modèle qui répond « je ne trouve pas », et à raison dans les deux cas. Pour `ofgl-02`, le morceau retrouvé de la page 16 ne contient pas le chiffre (70,4 Md€), qui est dans un autre morceau de la même page. Pour `rgpd-03`, le montant est présent mais la condition « articles 25 à 39 » a été coupée dans le morceau suivant. C'est le revers des petits morceaux : une information peut être séparée de son contexte.
+   - Conséquence de mesure : « passage retrouvé » est compté **par page**, donc il surestime la recherche quand une page contient plusieurs morceaux.
    - 1 réponse jugée incomplète (`rgpd-04`, voir point 6).
 6. **Correction de mesure** : le mot-clé de `rgpd-04` avait des accents cassés et ne pouvait jamais correspondre. Corrigé, `rgpd-04` échoue toujours : les réponses omettent « à tout moment », que la règle exige. C'est le « faux négatif » déjà noté en Phase 1 (règle stricte). Les chiffres de la Phase 1 ne sont pas comparables à ceux-ci.
 7. **Latence** : ~20 s par réponse sur CPU, quelle que soit la variante ; c'est le modèle, pas la recherche. Le coût local est nul ; le coût cloud indicatif (~0,2 $ pour 1 000 questions) est négligeable face à la latence.
 
 ### Recommandation : go sous conditions
 
-- **Go** pour garder le RAG local comme base de la suite, en adoptant **morceaux de 1 200/150 et 4 extraits** (`CHUNK_SIZE`, `CHUNK_OVERLAP`, `TOP_K`) et `qwen3:4b-instruct`. Il faut **ré-ingérer le corpus** avec ces valeurs (l'index par défaut est encore à 2 400/300).
+- **Go** pour garder le RAG local comme base de la suite, en adoptant **morceaux de 1 200/150 et 4 extraits** (`CHUNK_SIZE`, `CHUNK_OVERLAP`, `TOP_K`) et `qwen3:4b-instruct`. **Appliqué le 2026-11-22** ([ADR 0006](adr/0006-decoupage-et-nombre-d-extraits.md)) : index principal ré-ingéré (1 760 morceaux), mesure refaite (`default-1200-k4`) avec des résultats identiques : 30/38, 11/11 pièges refusés, 8/10 reformulations, médiane 19,7 s, p95 24,4 s.
 - **Conditions avant d'afficher des chiffres** : 8 questions restent en échec sur 38 (dont 3 de recherche et 2 refus inexpliqués, `rgpd-03` et `ofgl-02`) ; relire à la main un échantillon de réponses fidèles/pertinentes ; ne pas modifier `max_distance` sans mesure sur Azure AI Search (hybride).
 - **No-go** pour changer de modèle local (`gemma3:4b`) ou pour s'appuyer seul sur un juge 4B.
 

@@ -104,7 +104,9 @@ def answer_with_trace(question: str, provider, top_k: int):
 
 
 def cmd_run(args: argparse.Namespace) -> None:
-    settings.top_k = args.top_k
+    if args.top_k:
+        settings.top_k = args.top_k
+    args.top_k = settings.top_k
     if args.model:
         settings.ollama_chat_model = args.model
     if args.index_dir:
@@ -284,7 +286,7 @@ def main() -> None:
 
     run = sub.add_parser("run", help="answer every question with one configuration")
     run.add_argument("name")
-    run.add_argument("--top-k", type=int, default=2)
+    run.add_argument("--top-k", type=int, help="passages retrieved (default: settings)")
     run.add_argument("--model", help="Ollama chat model (default: settings)")
     run.add_argument(
         "--index-dir", help="Chroma folder relative to the repo (default: data/chroma)"

@@ -77,7 +77,7 @@ Le Python géré par uv ne s'installe pas dans son dossier par défaut (`%APPDAT
 cd apps/api && uv sync && uv run pytest && uv run ruff check . && uv run ruff format --check .
 uv run uvicorn main:app --reload   # http://localhost:8000/health
 uv run python scripts/download_corpus.py   # télécharge les PDF (docs/corpus.md)
-uv run python -m rag.ingest                # chunking + embeddings (Ollama) -> data/chroma
+uv run python -m rag.ingest                # chunking 1200/150 + embeddings (Ollama) -> data/chroma (~6 min)
 uv run python scripts/eval_retrieval.py    # qualité de la recherche sur eval/questions.jsonl (sans LLM)
 uv run python scripts/evaluate.py run|judge|report   # Phase 5 : réponses, juges locaux, tableau (eval/results/)
 
@@ -107,5 +107,5 @@ npm run lint && npx tsc --noEmit && npm run build
 - [x] CI GitHub Actions écrite (`ci.yml` : API, web, Terraform ; `docker.yml` : image sur GHCR) — à vérifier au premier push
 - [x] Phase 4 locale : agent LangGraph de pré-analyse + validation humaine + audit PostgreSQL + page `/analyses` (ADR 0005) ; reste : variante Semantic Kernel (facultatif)
 - [~] Code Azure prêt et testé sans compte : `AzureOpenAIProvider`, `AzureSearchStore`, bascule par `LLM_PROVIDER=azure_openai` (ADR 0004) ; jamais exécuté en réel
-- [~] Phase 5 : 49 questions, 3 variantes comparées, go sous conditions (`docs/evaluation.md`) ; reste : CI d'évaluation, recherche hybride sur Azure
+- [~] Phase 5 : 49 questions, 3 variantes comparées, go sous conditions (`docs/evaluation.md`), réglage 1 200/150 + 4 extraits appliqué (ADR 0006) ; reste : CI d'évaluation, recherche hybride sur Azure
 - [ ] Phases 2, 3 et 6 : voir le plan
