@@ -1,12 +1,13 @@
-name: API image
+name: Docker images
 
-# Pull request: build only (checks the Dockerfile). Push to main: build and publish to GHCR.
+# Pull request: build only (checks the Dockerfiles). Push to main: publish the API image to GHCR.
+# The web image is only built (its API address is fixed at build time, so no generic image to publish).
 on:
   pull_request:
-    paths: [apps/api/**, .github/workflows/docker.yml]
+    paths: [apps/api/**, apps/web/**, .github/workflows/docker.yml]
   push:
     branches: [main]
-    paths: [apps/api/**, .github/workflows/docker.yml]
+    paths: [apps/api/**, apps/web/**, .github/workflows/docker.yml]
   workflow_dispatch:
 
 permissions:
@@ -45,3 +46,15 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  web-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: apps/web
+          push: false
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=web

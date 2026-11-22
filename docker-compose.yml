@@ -1,4 +1,7 @@
-# Local services. Development credentials only: never reuse them elsewhere.
+# Whole system in containers: docker compose up -d --build
+#   db (PostgreSQL) -> api (FastAPI) -> web (Next.js), models served by Ollama.
+# The database alone still works for the manual flow: docker compose up -d db
+# Development credentials only: never reuse them elsewhere. Settings: see .env.example.
 services:
   db:
     image: postgres:17-alpine
@@ -15,5 +18,77 @@ services:
       interval: 5s
       retries: 10
 
+  api:
+    build: apps/api
+    image: publifin-api
+    environment:
+      DATABASE_URL: postgresql://publifin:publifin@db:5432/publifin
+      # Ollama of the host by default; http://ollama:11434 with the "ollama" profile.
+      OLLAMA_BASE_URL: ${DOCKER_OLLAMA_URL:-http://host.docker.internal:11434}
+      CORS_ORIGINS: '["http://localhost:${WEB_PORT:-3000}"]'
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # same name on Linux as on Docker Desktop
+    volumes:
+      - ./data:/srv/data # corpus and Chroma index stay on the host, never in the image
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  web:
+    build:
+      context: apps/web
+      args:
+        # Address of the API as seen by the browser (inlined at build time).
+        NEXT_PUBLIC_API_URL: http://localhost:${API_PORT:-8000}
+    image: publifin-web
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+  # One-off job: download the PDFs (skips those present) and rebuild the index (~6 min on CPU).
+  #   docker compose --profile ingest run --rm ingest
+  ingest:
+    profiles: [ingest]
+    build: apps/api
+    image: publifin-api
+    command: ["sh", "-c", "python scripts/download_corpus.py && python -m rag.ingest"]
+    environment:
+      OLLAMA_BASE_URL: ${DOCKER_OLLAMA_URL:-http://host.docker.internal:11434}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./data:/srv/data
+      - ./apps/api/scripts:/srv/apps/api/scripts:ro # scripts are not part of the API image
+
+  # Optional: Ollama in a container instead of the host's (set DOCKER_OLLAMA_URL=http://ollama:11434).
+  #   docker compose --profile ollama up -d
+  #   docker compose exec ollama ollama pull qwen3:4b-instruct   (then bge-m3)
+  ollama:
+    profiles: [ollama]
+    image: ollama/ollama:0.40.16
+    volumes:
+      - ollama:/root/.ollama # downloaded models survive restarts
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      retries: 6
+
 volumes:
   pgdata:
+  ollama:

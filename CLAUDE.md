@@ -87,9 +87,11 @@ uv run python scripts/injection.py         # Phase 6 : 9 attaques d'injection de
 docker compose up -d db
 # Sans base, l'API démarre quand même : /ask marche, /analyses répond 503.
 
-# Image Docker de l'API (Ollama de l'hôte, index local monté)
-docker build -t publifin-api apps/api
-docker run --rm -p 8000:8000 -v "$PWD/data:/srv/data" -e OLLAMA_BASE_URL=http://host.docker.internal:11434 publifin-api
+# Système complet en conteneurs (cible « serveur d'entreprise », ADR 0007) : db + api + web, Ollama de l'hôte
+docker compose up -d --build                          # :5433, :8000, :3000 (ports dans .env.example)
+docker compose --profile ingest run --rm ingest       # corpus + index dans data/ (monté, jamais dans l'image)
+docker compose --profile ollama up -d                 # facultatif : Ollama en conteneur (DOCKER_OLLAMA_URL=http://ollama:11434)
+# Git Bash réécrit les chemins de `-e VAR=/srv/...` : préfixer par MSYS_NO_PATHCONV=1 (ou utiliser PowerShell).
 
 # Terraform (à blanc, gratuit ; apply seulement avec accord explicite)
 cd infra && terraform fmt -check -recursive && cd envs/dev && terraform init -backend=false && terraform validate
@@ -112,5 +114,6 @@ npm run lint && npx tsc --noEmit && npm run build
 - [~] Phase 5 : 49 questions, 3 variantes comparées, go sous conditions (`docs/evaluation.md`), réglage 1 200/150 + 4 extraits appliqué (ADR 0006) ; contrôle d'évaluation en CI ; reste : recherche hybride sur Azure
 - [~] Phase 6 locale : OWASP LLM Top 10, banc d'injection (7/9 bloquées), extraits balisés et liens retirés, note RGPD et AI Act (`docs/securite.md`) ; reste : Entra ID, filtrage de contenu Azure
 - [x] Positionnement : projet portable (poste, serveur d'entreprise, Azure), jamais « déployé sur Azure » tant que ce n'est pas vrai (ADR 0007)
+- [x] `docker compose` complet (db, api, web, profils `ingest` et `ollama`), testé de bout en bout sur le poste : cible « serveur d'entreprise » démontrable (ADR 0007)
 - [~] Documentation d'architecte : README vitrine, `docs/architecture.md` (C4 + flux, Mermaid), démo animée `docs/demo.gif`
 - [ ] Phases 2 et 3 : voir le plan

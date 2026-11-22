@@ -34,7 +34,7 @@ Tout tourne en local (Ollama, Chroma, PostgreSQL). Le projet est conçu **portab
 | Cible | Statut |
 | --- | --- |
 | **Poste local** | Testé de bout en bout (démo, évaluation, CI) |
-| **Serveur d'entreprise** (données internes, GPU) | Même code, image Docker de l'API, configuration par variables d'environnement (`OLLAMA_BASE_URL`, `DATABASE_URL`) |
+| **Serveur d'entreprise** (données internes, GPU) | **Testé sur le poste avec `docker compose`** : base, API et front en conteneurs, de la question citée à la note validée et auditée ; modèles servis par Ollama (`OLLAMA_BASE_URL`) |
 | **Azure** (Container Apps, Azure OpenAI, AI Search, identité managée, sans clé) | **Prêt à déployer** : 5 modules Terraform validés, fournisseur Azure OpenAI et index Azure AI Search écrits et testés, bascule par `LLM_PROVIDER=azure_openai` ([ADR 0003](docs/adr/0003-infrastructure-azure-minimale.md), [ADR 0004](docs/adr/0004-fournisseur-azure-et-index-vectoriel.md)) |
 
 | Couche | Local (aujourd'hui) | Azure (cible) |
@@ -63,6 +63,22 @@ cd apps/web && npm install && npm run dev
 ```
 
 Sans PostgreSQL, l'API démarre quand même : les questions fonctionnent, les pré-analyses répondent 503.
+
+## Lancer avec Docker (système complet)
+
+Une commande démarre la base, l'API et le front, dans cet ordre (chaque service attend que le précédent réponde). Prérequis : Docker et Ollama avec les deux modèles ci-dessus.
+
+```bash
+# Corpus et index, une fois (~6 min) : télécharge les PDF manquants puis construit l'index dans data/
+docker compose --profile ingest run --rm ingest
+
+# Base (5433), API (http://localhost:8000) et front (http://localhost:3000)
+docker compose up -d --build
+```
+
+- Le corpus et l'index restent sur l'hôte, dans `data/`, monté dans le conteneur de l'API : les images ne contiennent ni PDF ni index.
+- L'API appelle l'Ollama de l'hôte (`host.docker.internal`). Pour un Ollama en conteneur : `docker compose --profile ollama up -d`, `DOCKER_OLLAMA_URL=http://ollama:11434` dans `.env`, puis `docker compose exec ollama ollama pull qwen3:4b-instruct` (et `bge-m3`).
+- Ports et adresse de l'API : voir `.env.example`. L'adresse de l'API est intégrée au front à la construction ; un changement de port demande `--build`.
 
 ## Résultats mesurés
 

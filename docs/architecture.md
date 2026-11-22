@@ -62,6 +62,40 @@ flowchart LR
 - Le fournisseur de modèle est une interface (`LLMProvider`) : `LLM_PROVIDER=azure_openai` bascule sur Azure sans toucher au reste ([ADR 0004](adr/0004-fournisseur-azure-et-index-vectoriel.md)).
 - Sans PostgreSQL, l'API démarre quand même : `/ask` fonctionne, `/analyses` répond 503.
 
+## Niveau 2 : conteneurs, sur un serveur d'entreprise (`docker compose`, testé sur le poste)
+
+Le même code, livré en images Docker et lancé par `docker compose up -d --build` ([ADR 0007](adr/0007-portabilite-des-cibles-de-deploiement.md)).
+
+```mermaid
+flowchart LR
+    ca(["👤 Chargé d'affaires<br/><i>navigateur</i>"])
+
+    subgraph hote["Serveur (ici : poste Windows, Docker Desktop)"]
+        subgraph compose["docker compose"]
+            web["<b>web</b><br/>Next.js standalone<br/><i>:3000, non root</i>"]
+            api["<b>api</b><br/>FastAPI<br/><i>:8000, non root</i>"]
+            db[("<b>db</b><br/>PostgreSQL 17<br/><i>volume pgdata</i>")]
+            ingest["<b>ingest</b> (profil)<br/><i>tâche ponctuelle :<br/>corpus + index</i>"]
+            ollamac["<b>ollama</b> (profil)<br/><i>volume des modèles</i>"]
+        end
+        data[("data/<br/><i>PDF + index Chroma,<br/>monté, hors image</i>")]
+        ollama["Ollama de l'hôte<br/><i>(ou serveur GPU)</i>"]
+    end
+
+    ca -- "pages" --> web
+    ca -- "HTTP / JSON<br/>(CORS : origine du front)" --> api
+    api -- "audit, notes, checkpoints" --> db
+    api --> data
+    ingest --> data
+    api -- "OLLAMA_BASE_URL<br/>host.docker.internal" --> ollama
+    ingest --> ollama
+    api -. "ou http://ollama:11434" .-> ollamac
+```
+
+- **Ordre de démarrage** par healthchecks : `db` sain (`pg_isready`), puis `api` saine (`/health`), puis `web`.
+- Le navigateur appelle l'API directement : son adresse est intégrée au front à la construction (`NEXT_PUBLIC_API_URL`, argument de build).
+- Les images ne contiennent aucune donnée : le corpus et l'index sont dans `data/`, monté dans les conteneurs `api` et `ingest`.
+
 ## Niveau 2 : conteneurs, sur Azure (cible prête à déployer, validée à blanc)
 
 ```mermaid

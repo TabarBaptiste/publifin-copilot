@@ -33,6 +33,11 @@ Ce qui est vrai aujourd'hui (2026-11-18) et qu'il faudra surveiller ou lever. Ch
 - **Pas encore faits** : recherche hybride, comparaison local / cloud, recalibrage du seuil, authentification OIDC de la CI, déploiement automatique.
 - **Scale à zéro** : la première requête après une pause attend le démarrage du conteneur.
 
+## Conteneurs (`docker compose`, cible serveur d'entreprise)
+- **Testé sur le poste uniquement** (Windows, Docker Desktop, CPU) : base, API, front et ingestion en conteneurs, modèles servis par l'Ollama de l'hôte. Le profil `ollama` (modèles dans un conteneur) est écrit mais pas testé sur le poste (il retélécharge ~4 Go de modèles déjà présents sur l'hôte). → [ADR 0007](adr/0007-portabilite-des-cibles-de-deploiement.md)
+- **Adresse de l'API figée à la construction du front** (`NEXT_PUBLIC_API_URL`) : un autre nom d'hôte ou port demande de reconstruire l'image.
+- **HTTP sans TLS ni proxy inverse**, identifiants PostgreSQL de développement : sur un vrai serveur, ajouter un proxy HTTPS, des identifiants fournis par l'organisation et une sauvegarde de la base.
+
 ## Sécurité et conformité (Phase 6, voir `docs/securite.md`)
 - **Injection de prompt** : 9 attaques testées, 7 bloquées. Restent possibles un mot imposé dans la note de l'agent par un extrait piégé, et une commune falsifiée par l'auteur de la demande ; la validation humaine les couvre. Une exécution par attaque : pas une garantie.
 - **Pas d'authentification** sur l'API ; CORS limité à `localhost:3000`. Pas de filtrage des documents par rôle.
