@@ -168,12 +168,12 @@ Objectif : prouver la qualité avec des chiffres, puis trancher comme un archite
 
 ## Phase 6 — Sécurité, RGPD et IA responsable (1 semaine, en continu)
 
-- [ ] Lire l'**OWASP Top 10 for LLM Applications** et, pour chaque risque, noter s'il s'applique et ta mesure (`docs/securite.md`).
-- [ ] Tester l'**injection de prompt**, y compris indirecte : glisser dans un PDF du corpus une instruction malveillante et vérifier que l'agent ne l'exécute pas.
-- [ ] Garde-fous : filtrage de contenu Azure, validation des sorties d'outils, séparation nette instructions / données dans les prompts.
+- [x] Lire l'**OWASP Top 10 for LLM Applications** et, pour chaque risque, noter s'il s'applique et ta mesure (`docs/securite.md`).
+- [x] Tester l'**injection de prompt**, y compris indirecte : glisser dans un PDF du corpus une instruction malveillante et vérifier que l'agent ne l'exécute pas. *(`scripts/injection.py` : 9 attaques, 7 bloquées ; 2 risques résiduels couverts par la validation humaine, voir `docs/securite.md`)*
+- [~] Garde-fous : filtrage de contenu Azure, validation des sorties d'outils, séparation nette instructions / données dans les prompts. *(fait en local : extraits balisés, liens retirés, sorties validées ; filtrage Azure à venir)*
 - [ ] Contrôle d'accès : authentification Entra ID sur l'API, filtrage des documents par rôle dans la recherche (*security trimming*).
-- [ ] Note **RGPD** : quelles données passent par le modèle, région d'hébergement (UE), durée de conservation des journaux, masquage des données personnelles dans les logs.
-- [ ] Paragraphe **AI Act / IA responsable** : niveau de risque du cas d'usage, transparence vis-à-vis de l'utilisateur, rôle de la supervision humaine.
+- [x] Note **RGPD** : quelles données passent par le modèle, région d'hébergement (UE), durée de conservation des journaux, masquage des données personnelles dans les logs.
+- [x] Paragraphe **AI Act / IA responsable** : niveau de risque du cas d'usage, transparence vis-à-vis de l'utilisateur, rôle de la supervision humaine.
 
 ## Documentation d'architecte (tout au long du projet)
 

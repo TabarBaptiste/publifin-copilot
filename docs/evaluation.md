@@ -93,3 +93,14 @@ Les juges ne notent que les réponses données (pas les refus) ; les dénominate
 - Corpus de 6 PDF, 49 questions : écarts d'une ou deux questions non significatifs.
 - Latences mesurées sur CPU seul, une exécution par variante ; le `baseline` a dû être repris après un délai dépassé d'Ollama (ses 16 dernières questions ont été mesurées lors de la reprise).
 - Variantes non isolées (taille des morceaux et nombre d'extraits changent ensemble) ; recherche hybride, rerank et modèles Azure non évalués.
+
+## Phase 6 — effet des extraits balisés (2026-11-22)
+
+Le prompt a changé pour la sécurité (extraits encadrés par `<extrait>`, liens retirés ; voir `docs/securite.md`). Mesure refaite sur les 49 questions (`default-1200-k4`) :
+
+| Prompt | Bonnes (règle) | Refus corrects | Reformulations | Médiane | p95 |
+| --- | --- | --- | --- | --- | --- |
+| Avant (`chunks1200-k4`) | 30/38 | 11/11 | 8/10 | 20,8 s | 27,0 s |
+| Après (`default-1200-k4`) | 29/38 | 11/11 | 8/10 | 20,2 s | 26,8 s |
+
+Une seule question change : `ofgl-04` donne maintenant +4,1 % au lieu de +3,9 % pour la hausse des dépenses de fonctionnement 2024 (chiffre d'un autre périmètre du même rapport). L'écart est dans le bruit d'une exécution unique, mais c'est une réponse fausse et non un refus : à surveiller. Le contrôle de la CI passe (≥ 75 %).

@@ -31,12 +31,12 @@ Ce qui est vrai aujourd'hui (2026-11-18) et qu'il faudra surveiller ou lever. Ch
 - **Pas encore faits** : recherche hybride, comparaison local / cloud, recalibrage du seuil, authentification OIDC de la CI, déploiement automatique.
 - **Scale à zéro** : la première requête après une pause attend le démarrage du conteneur.
 
-## Sécurité et conformité (Phase 6 non commencée)
-- **Injection de prompt non testée** (directe ni via un PDF du corpus). Mesures déjà en place : extraits traités comme des données, chiffres calculés par du code, outils en lecture seule, écriture après validation seulement.
+## Sécurité et conformité (Phase 6, voir `docs/securite.md`)
+- **Injection de prompt** : 9 attaques testées, 7 bloquées. Restent possibles un mot imposé dans la note de l'agent par un extrait piégé, et une commune falsifiée par l'auteur de la demande ; la validation humaine les couvre. Une exécution par attaque : pas une garantie.
 - **Pas d'authentification** sur l'API ; CORS limité à `localhost:3000`. Pas de filtrage des documents par rôle.
-- **Le journal d'audit conserve le texte des demandes** : durée de conservation et masquage de données personnelles non définis (note RGPD à écrire).
+- **Le journal d'audit conserve le texte des demandes** : durée de conservation proposée (12 mois pour le texte libre) mais non implémentée ; pas de masquage des données personnelles.
 
 ## Processus
-- **La CI ne lance pas l'évaluation RAG** (elle demande Ollama) ni `terraform plan`.
+- **La CI ne lance pas l'évaluation RAG** (elle demande Ollama) : elle vérifie seulement les résultats commités (`scripts/check_eval.py`). Pas de `terraform plan` en CI.
 - **Piège Windows avec uv** : voir `CLAUDE.md`.
 - **Le front de développement** utilise l'API sur `NEXT_PUBLIC_API_URL` (par défaut le port 8000) : redémarrer l'API pour prendre le nouveau code.

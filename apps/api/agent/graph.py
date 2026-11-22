@@ -41,7 +41,7 @@ from agent.schemas import (
 from agent.tools import FinancesInput, GeoLookupInput, PublicDataTools, ToolError, corpus_queries
 from config import settings
 from providers.base import LLMProvider, ProviderUnavailable
-from rag.answer import cited_indices, renumber_citations
+from rag.answer import cited_indices, renumber_citations, strip_links
 from rag.retrieval import Passage
 
 MAX_RULES = 3
@@ -231,7 +231,7 @@ def build_graph(deps: Deps, checkpointer):
             reply = deps.llm(state["run_id"]).chat(messages).strip()
             cited = cited_indices(reply, len(passages))
             if cited:
-                appreciation = renumber_citations(reply, cited)
+                appreciation = strip_links(renumber_citations(reply, cited))
         if not appreciation:
             # No valid citation: keep only what the code can state, without a model paragraph.
             appreciation = (
