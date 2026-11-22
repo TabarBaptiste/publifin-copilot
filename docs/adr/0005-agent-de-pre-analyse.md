@@ -29,6 +29,7 @@ Le cas d'usage 2 doit produire une note de pré-analyse d'une demande de finance
 - (+) Comportement prévisible, borné, vérifié par 22 tests du graphe, des outils et de l'API (dont des tests contre un vrai PostgreSQL).
 - (+) Le relecteur voit exactement ce qui a été fait, étape par étape, et peut corriger la note.
 - (−) Le texte du paragraphe d'appréciation peut rester maladroit ou ambigu (observé : « le taux de 7,2 % dépasse le seuil d'alerte de 7 % »). C'est précisément ce que la validation humaine couvre ; à mesurer en Phase 5.
+- Mise à jour (2026-11-22) : erreur confirmée en préparant la démo (« 23,2 % dépasse le seuil d'alerte de 7 % » pour une commune saine). Correction : le code énonce lui-même chaque comparaison avec son seuil (« AU-DESSUS du seuil d'alerte de 7 % (pas d'alerte) ») et le modèle la reprend sans la refaire ; 8 essais sur 8 corrects ensuite, banc d'injection inchangé (7/9).
 - (−) Le relecteur saisit son nom à la main : pas d'authentification tant qu'Entra ID n'est pas branché (Phase 6). Le nom enregistré n'est donc pas une preuve d'identité.
 - (−) Les indicateurs reposent sur le **budget principal** des communes (OFGL), pas sur les budgets annexes, et sur la dernière année publiée.
 - Variante Semantic Kernel : non faite (étape facultative du plan).
