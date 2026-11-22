@@ -163,7 +163,7 @@ Objectif : prouver la qualité avec des chiffres, puis trancher comme un archite
 - [~] Mesurer avec Ragas ou promptfoo : fidélité aux sources, pertinence de la réponse, précision de la recherche, taux de refus correct. *(banc maison + juges locaux, voir `docs/evaluation.md` ; Ragas/promptfoo non utilisés)*
 - [x] Mesurer aussi latence, coût par question, et robustesse (questions reformulées, fautes de frappe).
 - [~] Comparer au moins deux variantes : taille des chunks, recherche vectorielle seule vs hybride, deux modèles. Tableau de résultats dans `docs/evaluation.md`. *(fait : taille des morceaux, nombre d'extraits, 2 modèles ; hybride à tester sur Azure AI Search)*
-- [ ] Lancer l'évaluation automatiquement dans la CI : la PR échoue si la qualité baisse sous un seuil.
+- [x] Lancer l'évaluation automatiquement dans la CI : la PR échoue si la qualité baisse sous un seuil. *(sans LLM en CI : `scripts/check_eval.py` valide le jeu de questions et exige des résultats commités à jour, ≥ 75 % de bonnes réponses et 100 % de pièges refusés ; la mesure elle-même se lance en local)*
 - [x] Rédiger une **recommandation argumentée** (1 page) : on industrialise, on fait évoluer ou on arrête, et à quelles conditions. C'est un livrable typique d'un architecte.
 
 ## Phase 6 — Sécurité, RGPD et IA responsable (1 semaine, en continu)
