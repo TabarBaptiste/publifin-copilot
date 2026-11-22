@@ -4,6 +4,10 @@
 
 Assistant IA pour les chargés d'affaires d'une banque publique **fictive** qui finance les collectivités locales. Projet d'entraînement au métier d'architecte IA sur Azure : chaque choix est mesuré, documenté (ADR) et réversible, avec un budget de **0 €**.
 
+![Démo : question citée, refus hors corpus, puis pré-analyse validée par un humain](docs/demo.gif)
+
+*Démo en local (CPU, modèle de 4 milliards de paramètres) : les temps d'attente sont raccourcis.*
+
 ## Le problème
 
 Un chargé d'affaires doit répondre à des questions réglementaires (RGPD, AI Act, CNIL) et préparer l'analyse de demandes de financement de communes. Les réponses sont dispersées dans de longs PDF, et la pré-analyse demande de croiser données financières publiques et règles.
