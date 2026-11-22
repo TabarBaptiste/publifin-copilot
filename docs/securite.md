@@ -1,6 +1,6 @@
 # Sécurité, RGPD et IA responsable
 
-Phase 6, version locale (2026-11-22). Les mesures propres à Azure (Entra ID, filtrage de contenu, Key Vault, réseau) sont décrites comme cibles : elles ne sont pas encore déployées.
+Phase 6, version locale (2026-11-22). Les mesures propres à Azure (Entra ID, filtrage de contenu, Key Vault, réseau) sont décrites comme cibles, prêtes à être mises en œuvre lors d'un déploiement.
 
 ## Injection de prompt : banc de test
 

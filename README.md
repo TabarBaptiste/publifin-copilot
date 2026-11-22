@@ -29,7 +29,13 @@ flowchart LR
     api --> pub["API Géo, OFGL<br/>(lecture seule)"]
 ```
 
-Tout tourne en local (Ollama, Chroma, PostgreSQL). La cible Azure (Container Apps, Azure OpenAI, AI Search, identité managée, sans aucune clé) est écrite en Terraform et validée, mais pas encore déployée. Schémas C4 et flux détaillés : [docs/architecture.md](docs/architecture.md).
+Tout tourne en local (Ollama, Chroma, PostgreSQL). Le projet est conçu **portable** ([ADR 0007](docs/adr/0007-portabilite-des-cibles-de-deploiement.md)) : le modèle, l'index et la configuration se changent par variables d'environnement, sans toucher au code. Schémas C4 et flux détaillés : [docs/architecture.md](docs/architecture.md).
+
+| Cible | Statut |
+| --- | --- |
+| **Poste local** | Testé de bout en bout (démo, évaluation, CI) |
+| **Serveur d'entreprise** (données internes, GPU) | Même code, image Docker de l'API, configuration par variables d'environnement (`OLLAMA_BASE_URL`, `DATABASE_URL`) |
+| **Azure** (Container Apps, Azure OpenAI, AI Search, identité managée, sans clé) | **Prêt à déployer** : 5 modules Terraform validés, fournisseur Azure OpenAI et index Azure AI Search écrits et testés, bascule par `LLM_PROVIDER=azure_openai` ([ADR 0003](docs/adr/0003-infrastructure-azure-minimale.md), [ADR 0004](docs/adr/0004-fournisseur-azure-et-index-vectoriel.md)) |
 
 | Couche | Local (aujourd'hui) | Azure (cible) |
 | --- | --- | --- |

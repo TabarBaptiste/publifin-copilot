@@ -62,7 +62,7 @@ flowchart LR
 - Le fournisseur de modèle est une interface (`LLMProvider`) : `LLM_PROVIDER=azure_openai` bascule sur Azure sans toucher au reste ([ADR 0004](adr/0004-fournisseur-azure-et-index-vectoriel.md)).
 - Sans PostgreSQL, l'API démarre quand même : `/ask` fonctionne, `/analyses` répond 503.
 
-## Niveau 2 : conteneurs, sur Azure (cible écrite, non déployée)
+## Niveau 2 : conteneurs, sur Azure (cible prête à déployer, validée à blanc)
 
 ```mermaid
 flowchart LR
