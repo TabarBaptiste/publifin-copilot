@@ -28,6 +28,8 @@ Ce qui est vrai aujourd'hui (2026-11-18) et qu'il faudra surveiller ou lever. Ch
 ## Azure (rien n'a été exécuté contre un vrai compte)
 - **Jamais appelé pour de vrai** : fournisseur Azure OpenAI, index AI Search, `terraform plan/apply`. → [ADR 0003](adr/0003-infrastructure-azure-minimale.md), [ADR 0004](adr/0004-fournisseur-azure-et-index-vectoriel.md)
 - **À vérifier au premier essai** : formule du score AI Search (distance = (1 − score) / score), analyseur `fr.microsoft`, rôles sur le niveau gratuit d'AI Search, disponibilité des modèles et de `DataZoneStandard` dans la région, accès à Azure OpenAI sur un compte d'essai, conditions actuelles de l'essai gratuit.
+- **Aucun modèle d'IA Azure sur l'essai gratuit** (quota à 0 pour Azure OpenAI et les autres modèles Foundry, Claude réservé aux abonnements payants) : options et décision à prendre dans l'[ADR 0001](adr/0001-budget-zero-euro.md).
+- **Blob Storage et Application Insights** sont créés par Terraform mais pas encore utilisés par le code.
 - **Pas encore faits** : recherche hybride, comparaison local / cloud, recalibrage du seuil, authentification OIDC de la CI, déploiement automatique.
 - **Scale à zéro** : la première requête après une pause attend le démarrage du conteneur.
 

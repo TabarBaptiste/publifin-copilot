@@ -83,12 +83,13 @@ flowchart LR
     ghcr -- "image" --> aca
     aca -- "rôle : OpenAI User" --> aoai
     aca -- "rôle : lecture de l'index" --> search
-    aca -- "rôle : lecture des blobs" --> blob
-    aca -- "traces, journaux" --> obs
+    aca -. "rôle : lecture des blobs<br/>(prévu, non utilisé)" .-> blob
+    aca -- "journaux (stdout)" --> obs
 ```
 
 - **Aucune clé** : authentification par clé désactivée partout ; l'API utilise son identité managée avec trois rôles en lecture ou appel seulement.
 - **Coûts** : fenêtre gratuite, budget avec alertes, `terraform destroy` après chaque session ([ADR 0001](adr/0001-budget-zero-euro.md)).
+- **Écrit mais pas encore utilisé par le code** : le Blob Storage (les citations renvoient aux PDF officiels en ligne, l'ingestion lit les fichiers locaux) et Application Insights (la chaîne de connexion est fournie, mais l'API n'est pas instrumentée avec OpenTelemetry ; seuls les journaux du conteneur arrivent dans Log Analytics).
 - **Pas encore dans la cible** : PostgreSQL managé (l'agent reste donc local pour l'instant), hébergement du front, Entra ID devant l'API, Key Vault (aucun secret à y mettre tant que tout passe par l'identité managée). Voir [securite.md](securite.md) et [limites.md](limites.md).
 
 ## Flux d'une question (RAG)

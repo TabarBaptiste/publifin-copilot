@@ -130,6 +130,9 @@ class AzureSearchStore:
                     searchable=True,
                     vector_search_dimensions=settings.embedding_dimensions,
                     vector_search_profile_name="hnsw-cosine",
+                    # Never read back: not storing the raw copy halves the vector storage
+                    # (~11 MB for 1 760 chunks), which matters on the 50 MB free tier.
+                    stored=False,
                 ),
             ],
             vector_search=VectorSearch(
