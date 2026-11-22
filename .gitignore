@@ -42,3 +42,7 @@ Thumbs.db
 
 # uv-managed Python (local workaround, see CLAUDE.md)
 .uv-python/
+
+# Local working files, never published
+Claude outputs/
+eval/results/run.log

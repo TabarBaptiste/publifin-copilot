@@ -179,8 +179,8 @@ Objectif : prouver la qualité avec des chiffres, puis trancher comme un archite
 
 C'est ce qui te distingue d'un développeur qui « a fait un chatbot ».
 
-- [ ] `README.md` : problème, démo (GIF ou vidéo), schéma, lancement en 3 commandes, résultats chiffrés, limites.
-- [ ] Schémas au format **C4** (contexte, conteneurs) dans `docs/architecture.md`.
+- [~] `README.md` : problème, démo (GIF ou vidéo), schéma, lancement en 3 commandes, résultats chiffrés, limites. *(fait sauf la démo animée)*
+- [x] Schémas au format **C4** (contexte, conteneurs) dans `docs/architecture.md`.
 - [ ] Des **ADR** (Architecture Decision Records) courts, par exemple : « Pourquoi LangGraph plutôt que Semantic Kernel », « Pourquoi la recherche hybride », « Pourquoi Container Apps plutôt qu'App Service ».
 - [ ] Un guide « créer un nouveau prototype avec le template », pour la partie accompagnement des équipes.
 
